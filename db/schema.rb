@@ -18,8 +18,10 @@ ActiveRecord::Schema.define(version: 2021_08_11_172450) do
   create_table "answers", force: :cascade do |t|
     t.string "title", null: false
     t.text "body", null: false
+    t.bigint "question_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["question_id"], name: "index_answers_on_question_id"
   end
 
   create_table "questions", force: :cascade do |t|
@@ -29,4 +31,5 @@ ActiveRecord::Schema.define(version: 2021_08_11_172450) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "answers", "questions"
 end
