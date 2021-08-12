@@ -37,3 +37,5 @@ yarn-debug.log*
 
 # Ignore database config
 /config/database.yml
+
+/db/schema.rb
