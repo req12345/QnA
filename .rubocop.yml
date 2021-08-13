@@ -29,6 +29,9 @@ AllCops:
     - '.git/**/*'
     - 'app/views/**/*'
 
+Layout/EndOfLine:
+   Enabled: False
+
 Layout/IndentationConsistency:
   EnforcedStyle: 'indented_internal_methods'
 
@@ -55,6 +58,9 @@ Naming/FileName:
     - 'Rakefile'
 
 Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
   Enabled: false
 
 Style/StringLiterals:
