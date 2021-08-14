@@ -1,2 +1,10 @@
-h1= @question.title
+h2= @question.title
 p= @question.body
+
+h3 Answers
+- if @question.answers.any?
+  div
+    - @question.answers.each do |answer|
+      p= answer.body
+
+=render 'answers/form'
