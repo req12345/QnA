@@ -1,22 +1,20 @@
 class AnswersController < ApplicationController
-  def show; end
-
-  def new; end
+  before_action :authenticate_user!, only: :create
 
   def create
     @answer = question.answers.new(answer_params)
 
     if @answer.save
-      redirect_to @answer
+      redirect_to question, notice: 'Your answer successfully created'
     else
-      render :new
+      render 'questions/show'
     end
   end
 
   private
 
   def answer_params
-    params.require(:answer).permit(:title, :body, :question_id)
+    params.require(:answer).permit(:body)
   end
 
   def question
