@@ -8,7 +8,7 @@ feature 'User can look at question with answers', %q{
 } do
   given(:user) { create(:user) }
   given(:question) { create(:question, author: user) }
-  given!(:answer) { create(:answer, question: question, author: user)}
+  given!(:answers) { create_list(:answer, 3, question: question, author: user)}
 
   background { visit question_path(question) }
 
@@ -18,6 +18,6 @@ feature 'User can look at question with answers', %q{
   end
 
   scenario 'User can view question answers'  do
-    expect(page).to have_content answer.body
+    answers.each { |answer| expect(page).to have_content answer.body }
   end
 end

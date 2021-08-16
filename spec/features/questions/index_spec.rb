@@ -11,9 +11,13 @@ feature 'User view the list of questions', %q{
   given!(:questions) { create_list(:question, 3, author: user) }
 
   scenario 'User can views the list of questions' do
-
     visit questions_path
 
-    questions.each { |question| expect(page).to have_content question.title }
+    counter = 0
+    questions.each do |question|
+      counter += 1 if question.valid?
+     expect(page).to have_content question.title
+    end
+    expect(counter).to eq questions.count
   end
 end

@@ -2,5 +2,5 @@ class Question < ApplicationRecord
   has_many :answers, dependent: :destroy
   belongs_to :author, class_name: 'User', foreign_key: :user_id
 
-  validates :title, :body, :user_id, presence: true
+  validates :title, :body, presence: true
 end
