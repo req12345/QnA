@@ -8,7 +8,7 @@ feature 'User view the list of questions', %q{
 } do
 
   given(:user) { create(:user) }
-  given!(:questions) { create_list(:question, 3) }
+  given!(:questions) { create_list(:question, 3, author: user) }
 
   scenario 'User can views the list of questions' do
 
