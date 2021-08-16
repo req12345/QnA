@@ -13,11 +13,8 @@ feature 'User view the list of questions', %q{
   scenario 'User can views the list of questions' do
     visit questions_path
 
-    counter = 0
     questions.each do |question|
-      counter += 1 if question.valid?
-     expect(page).to have_content question.title
+     expect(page).to have_content(question.title, count: questions.size)
     end
-    expect(counter).to eq questions.count
   end
 end
