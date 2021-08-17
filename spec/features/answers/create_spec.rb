@@ -23,7 +23,7 @@ feature 'User can create answer', %q{
       expect(page).to have_content 'text text text'
     end
 
-    scenario 'Answer a question with empty body' do
+    scenario 'Answer a question with empty body', js: true do
       click_on 'Answer'
 
       expect(page).to have_content "Body can't be blank"
