@@ -2,7 +2,9 @@ require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
   let(:user) { create(:user) }
+  let(:not_author) { create :user }
   let(:question) { create(:question, author: user) }
+  let(:answer) { create(:answer, question: question) }
 
   describe 'POST #create' do
     before { login(user) }
@@ -37,39 +39,78 @@ RSpec.describe AnswersController, type: :controller do
       before { login(user) }
 
       it 'deletes the answer' do
-        expect { delete :destroy, params: { id: answer } }.to change(question.answers, :count).by(-1)
+        expect { delete :destroy, params: { id: answer }, format: :js }.to change(question.answers, :count).by(-1)
       end
 
-      it 'redirects to question' do
-        delete :destroy, params: { id: answer }
-        expect(response).to redirect_to question_path(question)
+      it 'render destroy view' do
+        delete :destroy, params: { id: answer, format: :js }
+        expect(response).to render_template :destroy
       end
     end
 
     context 'Not auhthor' do
-      let(:not_author) { create :user }
       before { login(not_author) }
 
       it 'tries to delete answer' do
-        expect { delete :destroy, params: { id: answer } }.to_not change(question.answers, :count)
-      end
-
-      it 'redirects to index' do
-        delete :destroy, params: { id: answer }
-        expect(response).to redirect_to question_path(question)
+        expect { delete :destroy, params: { id: answer }, format: :js }.to_not change(question.answers, :count)
       end
     end
 
     context 'Guest' do
       it 'tries to delete answer' do
-        expect { delete :destroy, params: { id: answer } }.to_not change(question.answers, :count)
-      end
-
-      it 'redirects to sign_in' do
-        delete :destroy, params: { id: answer }
-        expect(response).to redirect_to new_user_session_path
+        expect { delete :destroy, params: { id: answer }, format: :js }.to_not change(question.answers, :count)
       end
     end
+  end
 
+  describe 'PATCH #udpate' do
+    let!(:answer) { create(:answer, question: question, author: user) }
+
+    context 'Author' do
+      before { login(user) }
+
+      context 'with valid attributes' do
+        it 'changes answers attributes' do
+          patch :update, params: { id: answer, answer: { body: 'new body' }, format: :js }
+          answer.reload
+          expect(answer.body).to eq 'new body'
+        end
+
+        it 'renders update view' do
+          patch :update, params: { id: answer, answer: { body: 'new body' }, format: :js }
+          expect(response).to render_template :update
+        end
+      end
+
+      context 'with invalid attributes' do
+        it 'changes answers attributes' do
+          expect do
+            patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid), format: :js }
+          end.to_not change(answer, :body)
+        end
+
+        it 'renders update view' do
+          patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid), format: :js }
+          expect(response).to render_template :update
+        end
+      end
+    end
+  end
+
+  context 'Not author' do
+    it 'tries to update answer' do
+      login(not_author)
+      patch :update, params: { id: answer, answer: { body: 'new body' }, format: :js }
+      answer.reload
+      expect(answer.body).to_not eq 'new body'
+    end
+  end
+
+  context 'Guest' do
+    it 'tries to update answer' do
+      patch :update, params: { id: answer, answer: { body: 'new body' }, format: :js }
+      answer.reload
+      expect(answer.body).to_not eq 'new body'
+    end
   end
 end

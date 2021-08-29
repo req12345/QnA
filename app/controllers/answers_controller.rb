@@ -8,10 +8,16 @@ class AnswersController < ApplicationController
   def destroy
      if current_user.author_of?(answer)
        answer.destroy
-       redirect_to question_path(answer.question), notice: 'Your answer deleted'
-     else
-       redirect_to question_path(answer.question)
+       flash[:notice] = 'Your answer deleted'
      end
+     @question = answer.question
+  end
+
+  def update
+    if current_user.author_of?(answer)
+      answer.update(answer_params)
+      @question = answer.question
+    end
   end
 
   private
