@@ -16,14 +16,14 @@ class AnswersController < ApplicationController
   def update
     if current_user.author_of?(answer)
       answer.update(answer_params)
-      @question = answer.question
+      set_question
     end
   end
 
   def update
     if current_user.author_of?(answer)
       answer.update(answer_params)
-      @question = answer.question
+      set_question
     end
   end
 
@@ -41,5 +41,8 @@ class AnswersController < ApplicationController
     @answer ||= params[:id] ? Answer.find(params[:id]) : question.answers.new
   end
 
+  def set_question
+    @question = answer.question
+  end
   helper_method :question, :answer
 end
