@@ -20,6 +20,13 @@ class AnswersController < ApplicationController
     end
   end
 
+  def update
+    if current_user.author_of?(answer)
+      answer.update(answer_params)
+      @question = answer.question
+    end
+  end
+
   private
 
   def answer_params
