@@ -2,7 +2,9 @@ require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
   let(:user) { create(:user) }
+  let(:not_author) { create :user }
   let(:question) { create(:question, author: user) }
+  let(:answer) { create(:answer, question: question) }
 
   describe 'POST #create' do
     before { login(user) }
@@ -47,7 +49,6 @@ RSpec.describe AnswersController, type: :controller do
     end
 
     context 'Not auhthor' do
-      let(:not_author) { create :user }
       before { login(not_author) }
 
       it 'tries to delete answer' do
@@ -70,6 +71,56 @@ RSpec.describe AnswersController, type: :controller do
         expect(response).to redirect_to new_user_session_path
       end
     end
+  end
 
+  describe 'PATCH #udpate' do
+    let!(:answer) { create(:answer, question: question, author: user) }
+
+    context 'Author' do
+      before { login(user) }
+
+      context 'with valid attributes' do
+        it 'changes answers attributes' do
+          patch :update, params: { id: answer, answer: { body: 'new body' }, format: :js }
+          answer.reload
+          expect(answer.body).to eq 'new body'
+        end
+
+        it 'renders update view' do
+          patch :update, params: { id: answer, answer: { body: 'new body' }, format: :js }
+          expect(response).to render_template :update
+        end
+      end
+
+      context 'with invalid attributes' do
+        it 'changes answers attributes' do
+          expect do
+            patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid), format: :js }
+          end.to_not change(answer, :body)
+        end
+
+        it 'renders update view' do
+          patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid), format: :js }
+          expect(response).to render_template :update
+        end
+      end
+    end
+  end
+
+  context 'Not author' do
+    it 'tries to update answer' do
+      login(not_author)
+      patch :update, params: { id: answer, answer: { body: 'new body' }, format: :js }
+      answer.reload
+      expect(answer.body).to_not eq 'new body'
+    end
+  end
+
+  context 'Guest' do
+    it 'tries to update answer' do
+      patch :update, params: { id: answer, answer: { body: 'new body' }, format: :js }
+      answer.reload
+      expect(answer.body).to_not eq 'new body'
+    end
   end
 end
