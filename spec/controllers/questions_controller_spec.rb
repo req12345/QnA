@@ -35,26 +35,8 @@ RSpec.describe QuestionsController, type: :controller do
 
     before { get :new }
 
-    it 'assigns a new Question to @question' do
-      expect(assigns(:question)).to be_a_new(Question)
-    end
-
     it 'renders new view' do
       expect(response).to render_template :new
-    end
-  end
-
-  describe 'GET #edit' do
-    before { login(user) }
-
-    before { get :edit, params: { id: question } }
-
-    it 'assigns the requested question to @question' do
-      expect(assigns(:question)).to eq question
-    end
-
-    it 'renders edit view' do
-      expect(response).to render_template :edit
     end
   end
 
@@ -85,40 +67,60 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'PATCH #update' do
-    before { login(user) }
+    let!(:question) { create(:question, author: user) }
 
-    context 'with valid attributes' do
-      it 'assigns the requested question to @question' do
-        patch :update, params: { id: question, question: attributes_for(:question) }
-        expect(assigns(:question)).to eq question
+    context 'Author do' do
+      before { login(user) }
+
+      context 'with valid attributes' do
+        it 'assigns the requested question to @question' do
+          patch :update, params: { id: question, question: attributes_for(:question), format: :js }
+          expect(assigns(:question)).to eq question
+        end
+
+        it 'changes question attributes' do
+          patch :update, params: { id: question, question: { title: 'new title', body: 'new body' }, format: :js }
+          question.reload
+
+          expect(question.title).to eq 'new title'
+          expect(question.body).to eq 'new body'
+        end
+
+        it 'renders update view' do
+          patch :update, params: { id: question, question: { title: 'new title', body: 'new body' }, format: :js }
+          expect(response).to render_template :update
+        end
       end
 
-      it 'changes question attributes' do
-        patch :update, params: { id: question, question: { title: 'new title', body: 'new body' } }
-        question.reload
-
-        expect(question.title).to eq 'new title'
-        expect(question.body).to eq 'new body'
-      end
-
-      it 'redirect to updated question' do
-        patch :update, params: { id: question, question: attributes_for(:question) }
-        expect(response).to redirect_to question
+      context 'with invalid attributes' do
+        it 'not changes question attributes' do
+          expect do
+            patch :update, params: { id: question, question: attributes_for(:question, :invalid), format: :js }
+          end.to_not change(question, :title)
+        end
+        it 'renders update view' do
+          patch :update, params: { id: question, question: attributes_for(:question, :invalid), format: :js }
+          expect(response).to render_template :update
+        end
       end
     end
 
-    context 'with invalid attributes' do
-      before { patch :update, params: { id: question, question: attributes_for(:question, :invalid) } }
+    context 'Not author' do
+      it 'tries to update question' do
+        not_author = create(:user)
+        login(not_author)
 
-      it 'does not change question' do
+        patch :update, params: { id: question, question: { body: 'new body' }, format: :js }
         question.reload
-
-        expect(question.title).to eq 'MyString'
-        expect(question.body).to eq 'MyText'
+        expect(question.body).to_not eq 'new body'
       end
+    end
 
-      it 're-renders edit view' do
-        expect(response).to render_template :edit
+    context 'Guest' do
+      it 'tries to update question' do
+        patch :update, params: { id: question, question: { body: 'new body' }, format: :js }
+        question.reload
+        expect(question.body).to_not eq 'new body'
       end
     end
   end
@@ -126,7 +128,7 @@ RSpec.describe QuestionsController, type: :controller do
   describe 'DELETE #destroy' do
     let!(:question) { create(:question, author: user) }
 
-    context 'Auhthor' do
+    context 'Author' do
       before { login(user) }
 
       it 'deletes the question' do

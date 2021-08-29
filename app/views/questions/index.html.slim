@@ -2,11 +2,7 @@
   p= link_to 'Log out', destroy_user_session_path, method: :delete
 
 h3 Questions
-table
-  thead
-    tr
-      th Title
-  tbody
-    = render @questions
+-@questions.each do |question|
+  p= link_to question.title, question
 
 p= link_to 'Ask question', new_question_path

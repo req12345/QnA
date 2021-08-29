@@ -9,6 +9,7 @@ import * as ActiveStorage from "@rails/activestorage"
 import "channels"
 import 'jquery'
 import 'utilities/answers'
+import 'utilities/questions'
 
 Rails.start()
 Turbolinks.start()
