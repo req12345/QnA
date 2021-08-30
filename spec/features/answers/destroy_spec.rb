@@ -19,7 +19,6 @@ feature 'User can delete answer', %q{
     expect(page).to_not have_content(answer.body)
   end
 
-
   scenario 'Not author can not delete question', js: true do
     sign_in(not_author)
     visit question_path(question)

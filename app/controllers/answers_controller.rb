@@ -9,8 +9,8 @@ class AnswersController < ApplicationController
      if current_user.author_of?(answer)
        answer.destroy
        flash[:notice] = 'Your answer deleted'
+       set_question
      end
-     @question = answer.question
   end
 
   def update
@@ -28,8 +28,7 @@ class AnswersController < ApplicationController
   end
 
   def mark_as_best
-    set_question
-    if current_user.author_of?(@question)
+    if current_user.author_of?(set_question)
   		question.update(best_answer_id: answer.id)
       @best_answer = answer
     end
