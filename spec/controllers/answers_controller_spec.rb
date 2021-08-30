@@ -1,10 +1,41 @@
 require 'rails_helper'
-
+require 'byebug'
 RSpec.describe AnswersController, type: :controller do
   let(:user) { create(:user) }
   let(:not_author) { create :user }
   let(:question) { create(:question, author: user) }
   let(:answer) { create(:answer, question: question) }
+
+  describe 'POST #mark_as_best' do
+    let!(:question) { create(:question, author: user) }
+    let!(:answer) { create(:answer, question: question, author: user) }
+    let!(:not_author) { create :user }
+
+    context 'Author' do
+      before { login(user) }
+
+      it 'marks answer as best' do
+        post :mark_as_best, params: { id: answer, format: :js }
+        question.reload
+        expect(question.best_answer.id).to eq answer.id
+      end
+
+      it 'renders template mark_as_best' do
+        post :mark_as_best, params: { id: answer, format: :js }
+        expect(response).to render_template :mark_as_best
+      end
+    end
+
+    context 'Not author' do
+      before { login(not_author) }
+
+      it 'can not marks answer as best' do
+        post :mark_as_best, params: { id: answer, format: :js }
+        question.reload
+        expect(question.best_answer).to eq nil
+      end
+    end
+  end
 
   describe 'POST #create' do
     before { login(user) }
@@ -35,7 +66,7 @@ RSpec.describe AnswersController, type: :controller do
   describe 'DELETE #destroy' do
     let!(:answer) { create(:answer, question: question, author: user) }
 
-    context 'Auhthor' do
+    context 'Author' do
       before { login(user) }
 
       it 'deletes the answer' do

@@ -27,6 +27,15 @@ class AnswersController < ApplicationController
     end
   end
 
+  def mark_as_best
+    set_question
+    if current_user.author_of?(@question)
+  		question.update(best_answer_id: answer.id)
+      @best_answer = answer
+      @other_answers = question.answers.where.not(id: question.best_answer)
+    end
+	end
+
   private
 
   def answer_params
@@ -44,5 +53,6 @@ class AnswersController < ApplicationController
   def set_question
     @question = answer.question
   end
+
   helper_method :question, :answer
 end

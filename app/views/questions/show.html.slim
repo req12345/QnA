@@ -1,10 +1,12 @@
 .question
   = render @question
 
+h3 Answers
 .answers
-  h3 Answers
   - if @question.answers.any?
-    =render @question.answers
+    - if @question.best_answer
+      = render 'answers/best_answer', resource: @best_answer
+    = render @other_answers
 
 -if user_signed_in?
   h4 Create new answer

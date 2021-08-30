@@ -18,7 +18,9 @@ feature 'User can marks answer best', %q{
     within '.answers' do
       expect(page).to have_link 'Mark as best'
       click_on 'Mark as best'
-      expect(page).to have_content 'Best answer'
+      question.reload
+      expect(page).to have_content 'The best answer'
+      expect(page).to have_content question.best_answer.body
     end
   end
 
