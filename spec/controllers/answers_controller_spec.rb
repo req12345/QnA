@@ -7,10 +7,6 @@ RSpec.describe AnswersController, type: :controller do
   let(:answer) { create(:answer, question: question) }
 
   describe 'POST #mark_as_best' do
-    let!(:question) { create(:question, author: user) }
-    let!(:answer) { create(:answer, question: question, author: user) }
-    let!(:not_author) { create :user }
-
     context 'Author' do
       before { login(user) }
 
