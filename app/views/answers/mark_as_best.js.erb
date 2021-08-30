@@ -1,2 +1,2 @@
 $('.answers').html('<%= j render 'answers/best_answer', resource: @best_answer %>');
-$('.answers').append('<%= j render @other_answers %>');
+$('.answers').append('<%= j render @question.answers %>');

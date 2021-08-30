@@ -17,7 +17,7 @@ RSpec.describe AnswersController, type: :controller do
       it 'marks answer as best' do
         post :mark_as_best, params: { id: answer, format: :js }
         question.reload
-        expect(question.best_answer.id).to eq answer.id
+        expect(question.best_answer_id).to eq answer.id
       end
 
       it 'renders template mark_as_best' do
