@@ -8,9 +8,9 @@ feature 'User can delete answer', %q{
   given(:user) { create(:user) }
   given(:not_author) { create(:user) }
   given(:question) { create(:question, author: user) }
-  given!(:answer) { create(:answer, author: user) }
+  given!(:answer) { create(:answer, question: question, author: user) }
 
-  scenario 'Author delete his question' do
+  scenario 'Author delete his question', js: true do
     sign_in(answer.author)
     visit question_path(answer.question)
     expect(page).to have_content answer.body
@@ -19,7 +19,7 @@ feature 'User can delete answer', %q{
     expect(page).to_not have_content(answer.body)
   end
 
-  scenario 'Not author can not delete question' do
+  scenario 'Not author can not delete question', js: true do
     sign_in(not_author)
     visit question_path(question)
 

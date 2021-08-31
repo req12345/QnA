@@ -2,24 +2,30 @@ class AnswersController < ApplicationController
   before_action :authenticate_user!
 
   def create
-    @answer = question.answers.new(answer_params)
-    @answer.author = current_user
-
-    if @answer.save
-      redirect_to @answer.question, notice: 'Your answer successfully created'
-    else
-      render 'questions/show'
-    end
+    @answer = question.answers.create(answer_params.merge(author: current_user))
   end
 
   def destroy
      if current_user.author_of?(answer)
        answer.destroy
-       redirect_to question_path(answer.question), notice: 'Your answer deleted'
-     else
-       redirect_to question_path(answer.question)
+       flash[:notice] = 'Your answer deleted'
+       set_question
      end
   end
+
+  def update
+    if current_user.author_of?(answer)
+      answer.update(answer_params)
+      set_question
+    end
+  end
+
+  def mark_as_best
+    if current_user.author_of?(set_question)
+  		question.update(best_answer_id: answer.id)
+      @best_answer = answer
+    end
+	end
 
   private
 
@@ -33,6 +39,10 @@ class AnswersController < ApplicationController
 
   def answer
     @answer ||= params[:id] ? Answer.find(params[:id]) : question.answers.new
+  end
+
+  def set_question
+    @question = answer.question
   end
 
   helper_method :question, :answer

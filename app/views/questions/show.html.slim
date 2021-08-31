@@ -1,22 +1,20 @@
-h2= @question.title
-p= @question.body
-
--if current_user&.author_of?(@question)
-  p= link_to 'Delete question',
-              question_path(@question),
-              method: :delete
+.question
+  = render @question
 
 h3 Answers
-- if @question.answers.any?
-  div
-    - @question.answers.each do |answer|
-      - if answer.persisted?
-        p= answer.body
-        - if current_user&.author_of?(answer)
-          p= link_to 'Delete answer',
-                      answer_path(answer),
-                      method: :delete
+.answers
+  - if @question.answers.any?
+    - if @question.best_answer
+      = render 'answers/best_answer', resource: @best_answer
+    = render @question.answers
 
 -if user_signed_in?
   h4 Create new answer
-  =render 'answers/form'
+  .answer-errors
+    = render 'shared/errors', resource: @answer
+
+  = form_with model: [@question, @answer], class: 'new-answer', local: false do |f|
+
+   = f.label :body
+   = f.text_area :body
+   = f.submit 'Answer'
