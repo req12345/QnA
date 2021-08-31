@@ -1,4 +1,4 @@
-- if answer.persisted? && question.best_answer != answer
+- if answer.persisted? && answer&.not_best_of?(question)
   p= answer.body
 
   - if current_user&.author_of?(answer)

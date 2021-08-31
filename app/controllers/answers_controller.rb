@@ -20,13 +20,6 @@ class AnswersController < ApplicationController
     end
   end
 
-  def update
-    if current_user.author_of?(answer)
-      answer.update(answer_params)
-      set_question
-    end
-  end
-
   def mark_as_best
     if current_user.author_of?(set_question)
   		question.update(best_answer_id: answer.id)
