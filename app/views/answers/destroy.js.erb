@@ -1,3 +1,7 @@
 $('.notice').text('<%= flash[:notice] %>')
-$('.answers').html('<%= j render 'answers/best_answer', resource: @question.best_answer %>');
-$('.answers').append('<%= j render @question.answers %>');
+<% if @question.best_answer.present? %>
+  $('.answers').html('<%= j render 'answers/best_answer', resource: @question.best_answer %>');
+  $('.answers').append('<%= j render @question.answers %>');
+<% else %>
+  $('.answers').html('<%= j render @question.answers %>');
+<% end %>
