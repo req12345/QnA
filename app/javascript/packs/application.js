@@ -10,6 +10,7 @@ import "channels"
 import 'jquery'
 import 'utilities/answers'
 import 'utilities/questions'
+import 'utilities/direct_upload'
 
 Rails.start()
 Turbolinks.start()

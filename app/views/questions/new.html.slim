@@ -9,6 +9,6 @@
     = f.text_area :body, class: "form-control"
   p
     = f.label :files
-    br= f.file_field :files, multiple: true
+    br= f.file_field :files, multiple: true, direct_upload: true
 
   p= f.submit 'Ask'
