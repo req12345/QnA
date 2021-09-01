@@ -16,5 +16,5 @@ h3 Answers
   = form_with model: [@question, @answer], class: 'new-answer', local: false do |f|
 
    = f.label :body
-   = f.text_area :body
+   = f.text_area :body, class: 'form-control'
    = f.submit 'Answer'
