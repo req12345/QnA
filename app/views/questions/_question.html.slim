@@ -1,9 +1,7 @@
 h2= question.title
 h3= question.body
 
-- if question.files.attached?
-  - question.files.each do |file|
-    p= link_to file.filename.to_s, url_for(file), target: '_blank'
+= render 'shared/attachments', resource: question
 
 - if current_user&.author_of?(question)
   .question-errors
@@ -27,4 +25,7 @@ h3= question.body
 
     p= f.label :body, 'Your question'
     = f.text_area :body, class: 'form-control'
+
+    p= f.label :files
+    br= f.file_field :files, class: 'form-control', multiple: true, direct_upload: true
     = f.submit 'Save'

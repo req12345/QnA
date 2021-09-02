@@ -30,7 +30,7 @@ class AnswersController < ApplicationController
   private
 
   def answer_params
-    params.require(:answer).permit(:body)
+    params.require(:answer).permit(:body, files: [])
   end
 
   def question
@@ -38,7 +38,7 @@ class AnswersController < ApplicationController
   end
 
   def answer
-    @answer ||= params[:id] ? Answer.find(params[:id]) : question.answers.new
+    @answer ||= params[:id] ? Answer.with_attached_files.find(params[:id]) : question.answers.new
   end
 
   def set_question
