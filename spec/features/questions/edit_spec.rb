@@ -61,6 +61,19 @@ feature 'User can edit his question', %q{
           expect(page).to_not have_selector 'textarea'
         end
       end
+
+      scenario ' edits his question and attaches file', js: true do
+        within '.question' do
+          fill_in 'Your question', with: 'edited question'
+          attach_file 'File', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
+          click_on 'Save'
+
+          expect(page).to_not have_content question.body
+          expect(page).to have_content 'edited question'
+          expect(page).to have_link question.files.first.filename.to_s
+          expect(page).to have_link question.files.second.filename.to_s
+        end
+      end
     end
   end
 end
