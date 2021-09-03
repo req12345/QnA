@@ -22,7 +22,6 @@ feature 'User can delete answer', %q{
       expect(page).to_not have_link file_name(answer_with_file)
       expect(page).to_not have_link 'Delete file'
     end
-
   end
 
   scenario 'Not author can not delete attachments', js: true do
