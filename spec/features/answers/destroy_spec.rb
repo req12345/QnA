@@ -8,7 +8,30 @@ feature 'User can delete answer', %q{
   given(:user) { create(:user) }
   given(:not_author) { create(:user) }
   given(:question) { create(:question, author: user) }
-  given!(:answer) { create(:answer, question: question, author: user) }
+  given(:answer) { create(:answer, question: question, author: user) }
+  given(:answer_with_file) { create(:answer, :with_file, question: question, author: user) }
+
+  scenario 'Author can delete attachments', js: true do
+    sign_in(answer_with_file.author)
+    visit question_path(answer_with_file.question)
+
+    within '.answers' do
+      expect(page).to have_link file_name(answer_with_file)
+      click_on 'Delete file'
+
+      expect(page).to_not have_link file_name(answer_with_file)
+      expect(page).to_not have_link 'Delete file'
+    end
+
+  end
+
+  scenario 'Not author can not delete attachments', js: true do
+    sign_in(not_author)
+    visit question_path(answer_with_file.question)
+    within '.answers' do
+      expect(page).to_not have_link 'Delete file'
+    end
+  end
 
   scenario 'Author delete his question', js: true do
     sign_in(answer.author)
@@ -19,7 +42,7 @@ feature 'User can delete answer', %q{
     expect(page).to_not have_content(answer.body)
   end
 
-  scenario 'Not author can not delete question', js: true do
+  scenario 'Not author can not delete question' do
     sign_in(not_author)
     visit question_path(question)
 
@@ -30,5 +53,9 @@ feature 'User can delete answer', %q{
     visit question_path(question)
 
     expect(page).to_not have_link 'Delete answer'
+  end
+
+  def file_name(item)
+    item.files[0].filename.to_s
   end
 end
