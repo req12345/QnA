@@ -17,8 +17,6 @@ h3= question.body
             method: :delete,
             class: 'btn btn-danger btn-sm'
 
-
-
   = form_with model: question, class: 'hidden', html: { id: "edit-question-#{question.id}" }, local: false do |f|
     p= f.label :title, 'Title'
     = f.text_area :title, class: 'form-control'
