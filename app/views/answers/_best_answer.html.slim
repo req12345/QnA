@@ -3,14 +3,15 @@
   p= resource.body
 
   - if current_user&.author_of?(resource)
-    p= link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: resource.id }
+    = link_to 'Edit', '#', class: 'edit-answer-link btn btn-info btn-sm', data: { answer_id: resource.id }
 
     = form_with model: resource, class: 'hidden', html: { id: "edit-answer-#{resource.id}" }, local: false do |f|
-      = f.label :body, 'Your answer'
+      p= f.label :body, 'Your answer'
       = f.text_area :body
-      = f.submit 'Save'
+      p= f.submit 'Save'
 
-    p= link_to 'Delete answer',
+    = link_to 'Delete answer',
                 answer_path(resource),
                 method: :delete,
-                remote: true
+                remote: true,
+                class: 'btn btn-danger btn-sm'

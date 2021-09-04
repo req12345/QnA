@@ -40,3 +40,5 @@ yarn-debug.log*
 
 /db/schema.rb
 /db/.project
+
+.env

@@ -15,6 +15,10 @@ h3 Answers
 
   = form_with model: [@question, @answer], class: 'new-answer', local: false do |f|
 
-   = f.label :body
-   = f.text_area :body
+   = f.label :body, 'Your answer'
+   = f.text_area :body, class: 'form-control'
+
+   = f.label :files
+   br= f.file_field :files, class: 'form-control', multiple: true, direct_upload: true
+
    = f.submit 'Answer'
