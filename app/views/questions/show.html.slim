@@ -21,4 +21,13 @@ h3 Answers
    = f.label :files
    br= f.file_field :files, class: 'form-control', multiple: true, direct_upload: true
 
+   p Links:
+   = f.fields_for :links do |l|
+     p
+       = l.label :name, 'Link name'
+       = l.text_field :name, class: "form-control"
+     p
+       = l.label :url
+       = l.text_field :url, class: "form-control"
+
    = f.submit 'Answer'
