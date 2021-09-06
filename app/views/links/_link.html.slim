@@ -1,0 +1,10 @@
+.h4 Links:
+.links
+  = f.fields_for :links do |l|
+    = l.label :name, 'Link name'
+    = l.text_field :name, class: "new_name form-control"
+
+    = l.label :url
+    = l.text_field :url, class: "new_url form-control"
+  .add_links
+    = link_to_add_association 'add link', f, :links, partial: 'links/link_fields'
