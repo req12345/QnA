@@ -1,6 +1,6 @@
-= render 'shared/errors', resource: question
+= render 'shared/errors', resource: @question
 
-= form_with model: question, local: false do |f|
+= form_with model: question do |f|
   p
     = f.label :title
     = f.text_field :title, class: "form-control"
@@ -11,6 +11,6 @@
     = f.label :files
     br= f.file_field :files, class: 'form-control', multiple: true, direct_upload: true
 
-  = render 'links/link', resource: @question, f: f
+  = render 'links/link', resource: question, f: f
 
   p= f.submit 'Ask'
