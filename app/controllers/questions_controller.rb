@@ -33,7 +33,7 @@ class QuestionsController < ApplicationController
 
   def destroy
     question.destroy if current_user.author_of?(question)
-    redirect_to questions_path, notice: 'Your question deleted'
+    redirect_to questions_path, alert: 'Your question deleted'
   end
 
   private

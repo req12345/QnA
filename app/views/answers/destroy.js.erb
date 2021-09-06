@@ -1,4 +1,4 @@
-$('.notice').text('<%= flash[:notice] %>')
+$('.alert-danger').html('<%= flash[:alert] %>')
 <% if @question.best_answer.present? %>
   $('.answers').html('<%= j render 'answers/best_answer', resource: @question.best_answer %>');
   $('.answers').append('<%= j render @question.answers %>');
