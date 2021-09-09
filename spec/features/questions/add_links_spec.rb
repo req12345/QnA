@@ -7,7 +7,8 @@ feature 'User can add links to question', %q{
 } do
 
   given(:user) { create(:user) }
-  given(:valid_url) { 'https://gist.github.com/req12345/939db9b546f87fdaa781cecd1ac93660' }
+  given(:valid_url) { 'https://google.com' }
+  given(:gist_url) { 'https://gist.github.com/req12345/939db9b546f87fdaa781cecd1ac93660' }
   given(:github_url) { 'https://github.com' }
   given(:invalid_url) { 'invalid.com' }
 
@@ -18,7 +19,7 @@ feature 'User can add links to question', %q{
 
       fill_in 'Title', with: 'Test question'
       fill_in 'Body', with: 'text text text'
-      fill_in 'Link name', with: 'My gist'
+      fill_in 'Link name', with: 'My link'
     }
 
     scenario ' with valid url when asks question', js: true do
@@ -31,7 +32,7 @@ feature 'User can add links to question', %q{
 
       click_on 'Ask'
       within '.question' do
-        expect(page).to have_link 'My gist', href: valid_url
+        expect(page).to have_link 'My link', href: valid_url
         expect(page).to have_link 'Github', href: github_url
       end
     end
@@ -40,8 +41,15 @@ feature 'User can add links to question', %q{
       fill_in 'Url', with: invalid_url
 
       click_on 'Ask'
-      expect(page).to_not have_link 'My gist', href: invalid_url
+      expect(page).to_not have_link 'My link', href: invalid_url
       expect(page).to have_content 'is not a valid URL'
+    end
+
+    scenario 'to gist when asks question', js: true do
+      fill_in 'Url', with: gist_url
+      click_on 'Ask'
+
+      expect(page).to have_content 'GET /anything?name=Ivan&age=31&number=1 HTTP/1.1'
     end
   end
 end
