@@ -6,4 +6,7 @@ class Link < ApplicationRecord
                     with: URI.regexp(%w[http https]),
                     message: 'is not a valid URL'
                   }
+  def gist?
+    URI(self.url).host.include?('gist')
+  end
 end
