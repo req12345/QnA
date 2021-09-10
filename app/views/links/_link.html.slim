@@ -1,10 +1,18 @@
-.h4 Links:
 .links
-  = f.fields_for :links do |l|
-    = l.label :name, 'Link name'
-    = l.text_field :name, class: "new_name form-control"
+  p Links:
+  ul
+   - resource.links.each do |link|
+    . id="link_#{link.id}"
+      - if link.gist?
+        li= link_to link.name, link.url, target: '_blank'
+        - link.read_gist.each do |file, content|
+          = content.content
+      - else
+        li= link_to link.name, link.url, target: '_blank'
 
-    = l.label :url
-    = l.text_field :url, class: "new_url form-control"
-  .add_links
-    = link_to_add_association 'add link', f, :links, partial: 'links/link_fields'
+      - if current_user&.author_of?(link.linkable)
+        = link_to 'Delete link',
+                   link_path(link),
+                   method: :delete,
+                   class: 'btn btn-danger btn-sm',
+                   remote: true

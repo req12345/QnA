@@ -1,5 +1,5 @@
 require 'rails_helper'
-require "byebug"
+
 RSpec.describe AttachmentsController, type: :controller do
   let(:author) { create(:user) }
   let(:user) { create(:user) }

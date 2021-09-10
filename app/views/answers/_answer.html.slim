@@ -2,17 +2,7 @@
 
   p= answer.body
 
-  .links
-    p Links:
-    ul
-     - answer.links.each do |link|
-       - if link.gist?
-         li= link_to link.name, link.url, target: '_blank'
-         - link.read_gist.each do |file, content|
-           = content.content
-       - else
-         li= link_to link.name, link.url, target: '_blank'
-
+  = render 'links/link', resource: answer
   = render 'shared/attachments', resource: answer
 
   - if current_user&.author_of?(answer)
@@ -35,5 +25,6 @@
       = f.text_area :body
       = f.label :files
       = f.file_field :files, class: 'form-control', multiple: true, direct_upload: true
+      = render 'links/form', resource: answer, f: f
 
       = f.submit 'Save'

@@ -8,8 +8,29 @@ feature 'User can delete question', %q{
 
   given(:user) { create(:user) }
   given(:not_author) { create(:user) }
-  given(:question) { create(:question) }
+  given(:question) { create(:question, author: user) }
   given(:question_with_file) { create(:question, :with_file, author: user) }
+  given(:question_with_link) { create(:question, :with_link, author: user) }
+  given(:valid_url) { 'https://google.com' }
+
+  it "Author deletes link in his own", js: true do
+    sign_in(user)
+    visit question_path(question_with_link)
+
+    within "#link_#{link_id(question_with_link)}" do
+      expect(page).to have_link 'MyString', href: 'http://valid.com'
+      click_on 'Delete link'
+    end
+    expect(page).to_not have_link 'MyString', href: 'http://valid.com'
+  end
+
+  it "The user cannot deletes a link that is not his own", js: true do
+    sign_in(not_author)
+    visit question_path(question_with_link)
+    within "#link_#{link_id(question_with_link)}" do
+      expect(page).to_not have_link 'Delete link'
+    end
+  end
 
   describe 'Author' do
     before do
@@ -61,5 +82,9 @@ feature 'User can delete question', %q{
 
   def file_name(item)
     item.files[0].filename.to_s
+  end
+
+  def link_id(item)
+    item.links.first.id
   end
 end

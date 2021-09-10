@@ -11,6 +11,6 @@
     = f.label :files
     br= f.file_field :files, class: 'form-control', multiple: true, direct_upload: true
 
-  = render 'links/link', resource: question, f: f
+  = render 'links/form', resource: question, f: f
 
   p= f.submit 'Ask'

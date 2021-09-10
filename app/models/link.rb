@@ -12,6 +12,6 @@ class Link < ApplicationRecord
 
   def read_gist
     client = Octokit::Client.new
-    client.gist(URI.parse(url).path.split('/').last).files
+    client.gist(URI(url).path.split('/').last).files
   end
 end

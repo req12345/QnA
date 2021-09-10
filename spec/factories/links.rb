@@ -3,6 +3,8 @@ FactoryBot.define do
     name { 'MyString' }
     url { 'http://valid.com' }
 
+    association :linkable, factory: :question
+
     trait :invalid do
       url { 'invalid.com' }
     end

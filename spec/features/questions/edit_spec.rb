@@ -10,6 +10,34 @@ feature 'User can edit his question', %q{
   given(:not_author) { create(:user) }
   given!(:question) { create(:question, author: user) }
 
+  describe 'Edit questions link' do
+    given!(:question_with_link) { create(:question, :with_link, author: user) }
+
+    scenario 'by author', js: true do
+      sign_in(user)
+      visit question_path(question_with_link)
+
+      within '.question' do
+        click_on 'Edit'
+        expect(page).to have_link 'MyString', href: 'http://valid.com'
+
+        fill_in 'Link name', with: 'New link name'
+        fill_in 'Url', with: 'http://newurl.com'
+        click_on 'Save'
+        expect(page).to_not have_link 'MyString', href: 'http://valid.com'
+        expect(page).to have_link 'New link name', href: 'http://newurl.com'
+      end
+    end
+
+    scenario 'by user', js: true do
+      sign_in(not_author)
+      visit question_path(question_with_link)
+      within '.question' do
+        expect(page).to_not have_link 'Edit'
+      end
+    end
+  end
+
   scenario 'Unauthenticated user can not edit question', js: true do
     visit question_path(question)
 
