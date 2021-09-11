@@ -12,5 +12,6 @@
     br= f.file_field :files, class: 'form-control', multiple: true, direct_upload: true
 
   = render 'links/form', resource: question, f: f
+  = render 'reward_form', f: f
 
   p= f.submit 'Ask'
