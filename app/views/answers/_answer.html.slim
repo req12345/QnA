@@ -5,6 +5,12 @@
   = render 'links/link', resource: answer
   = render 'shared/attachments', resource: answer
 
+  - if current_user&.author_of?(answer.question)
+    = link_to 'Mark as best',
+                mark_as_best_answer_path(answer),
+                method: :post, remote: true,
+                class: 'btn btn-success btn-sm'
+
   - if current_user&.author_of?(answer)
 
     = link_to 'Edit', '#', class: 'edit-answer-link btn btn-info btn-sm', data: { answer_id: answer.id }
@@ -14,11 +20,6 @@
                 method: :delete,
                 remote: true,
                 class: 'btn btn-danger btn-sm'
-
-    = link_to 'Mark as best',
-                mark_as_best_answer_path(answer),
-                method: :post, remote: true,
-                class: 'btn btn-success btn-sm'
 
     = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" }, local: false do |f|
       = f.label :body, 'Your answer'

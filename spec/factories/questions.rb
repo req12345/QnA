@@ -21,5 +21,11 @@ FactoryBot.define do
         create(:link, linkable: question)
       end
     end
+
+    trait :with_reward do
+      after :create do |question|
+        create(:reward, question: question)
+      end
+    end
   end
 end
