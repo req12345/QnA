@@ -13,4 +13,9 @@ Rails.application.routes.draw do
 
   resources :attachments, only: :destroy
   resources :links, only: :destroy
+  resources :users, only: :rewards do
+    member do
+      get :rewards
+    end
+  end
 end

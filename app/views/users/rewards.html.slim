@@ -1,0 +1,13 @@
+h3 Rewards:
+- if @rewards.present?
+  - @rewards.each do |reward|
+      .reward
+        .d-flex
+          .title Question:
+          .text = reward.question.title
+        .d-flex
+          .title Reward:
+          .text = reward.name
+
+        - if reward.image.attached?
+          = image_tag reward.image, size: '90x80'
