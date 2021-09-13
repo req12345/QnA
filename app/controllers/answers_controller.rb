@@ -2,7 +2,18 @@ class AnswersController < ApplicationController
   before_action :authenticate_user!
 
   def create
-    @answer = question.answers.create(answer_params.merge(author: current_user))
+    @answer = question.answers.new(answer_params.merge(author: current_user))
+
+    respond_to do |format|
+      if @answer.save
+        format.html { render @answer }
+      else
+        format.html do
+          render partial: 'shared/errors', locals: { resource: @answer },
+          status: :unprocessable_entity
+        end
+      end
+    end
   end
 
   def destroy
