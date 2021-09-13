@@ -9,6 +9,7 @@ feature 'User can marks answer best', %q{
   given(:author) { create(:user) }
   given(:not_author) { create(:user) }
   given(:question) { create(:question, author: author) }
+  given(:question_with_reward) { create(:question, :with_reward, author: author) }
   given!(:answer) { create(:answer, question: question, author: author) }
 
   scenario 'Author can marks answer as best', js: true do
@@ -22,6 +23,17 @@ feature 'User can marks answer best', %q{
       expect(page).to have_content 'The best answer'
       expect(page).to have_content question.best_answer.body
     end
+  end
+
+  scenario 'Author of answer recieve reward', js: true do
+    rewarded_answer = create(:answer, question: question_with_reward, author: not_author)
+    sign_in(author)
+    visit question_path(question_with_reward)
+
+    click_on 'Mark as best'
+    question_with_reward.reload
+
+    expect(question_with_reward.reward.user_id).to eq not_author.id
   end
 
   scenario 'Not author can not marks answer as best', js: true do

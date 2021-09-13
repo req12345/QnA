@@ -8,7 +8,7 @@ class AnswersController < ApplicationController
   def destroy
      if current_user.author_of?(answer)
        answer.destroy
-       flash[:notice] = 'Your answer deleted'
+       flash.now[:alert] = 'Your answer deleted'
        set_question
      end
   end
@@ -21,16 +21,16 @@ class AnswersController < ApplicationController
   end
 
   def mark_as_best
-    if current_user.author_of?(set_question)
-  		question.update(best_answer_id: answer.id)
-      @best_answer = answer
+    set_question
+    if current_user.author_of?(question)
+      question.set_best_answer(answer)
     end
 	end
 
   private
 
   def answer_params
-    params.require(:answer).permit(:body, files: [])
+    params.require(:answer).permit(:body, files: [], links_attributes: [:name, :url, :_destroy, :id])
   end
 
   def question

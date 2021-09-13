@@ -7,11 +7,13 @@ class QuestionsController < ApplicationController
 
   def show
     @answer = question.answers.new
+    @answer.links.new
     @best_answer = question.best_answer
   end
 
   def new
-
+    question.links.new
+    question.build_reward
   end
 
   def create
@@ -32,7 +34,7 @@ class QuestionsController < ApplicationController
 
   def destroy
     question.destroy if current_user.author_of?(question)
-    redirect_to questions_path, notice: 'Your question deleted'
+    redirect_to questions_path, alert: 'Your question deleted'
   end
 
   private
@@ -42,7 +44,9 @@ class QuestionsController < ApplicationController
   end
 
   def question_params
-    params.require(:question).permit(:title, :body, files: [])
+    params.require(:question).permit(:title, :body, files: [],
+                                     links_attributes: [:name, :url,:_destroy, :id],
+                                     reward_attributes: [:name, :image])
   end
 
   helper_method :question

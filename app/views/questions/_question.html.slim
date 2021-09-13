@@ -1,13 +1,14 @@
 h2= question.title
 h3= question.body
 
+= render 'links/link', resource: question
 = render 'shared/attachments', resource: question
 
 - if current_user&.author_of?(question)
   .question-errors
     = render 'shared/errors', resource: @question
 
-  p= link_to 'Edit question',
+  = link_to 'Edit question',
              '#',
              class: 'edit-question-link btn btn-info btn-sm',
              data: { question_id: question.id }
@@ -26,4 +27,7 @@ h3= question.body
 
     p= f.label :files
     br= f.file_field :files, class: 'form-control', multiple: true, direct_upload: true
+
+    = render 'links/form', resource: question, f: f
+    
     = f.submit 'Save'

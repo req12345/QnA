@@ -1,5 +1,5 @@
 require 'rails_helper'
-require 'byebug'
+
 RSpec.describe AnswersController, type: :controller do
   let(:user) { create(:user) }
   let(:not_author) { create :user }

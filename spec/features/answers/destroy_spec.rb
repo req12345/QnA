@@ -10,6 +10,27 @@ feature 'User can delete answer', %q{
   given(:question) { create(:question, author: user) }
   given(:answer) {create(:answer, question: question, author: user) }
   given(:answer_with_file) { create(:answer, :with_file, question: question, author: user) }
+  given(:answer_with_link) { create(:answer, :with_link, question: question, author: user) }
+
+  it "Author deletes his answers link in his own", js: true do
+    sign_in(user)
+    visit question_path(answer_with_link.question)
+
+    within "#link_#{link_id(answer_with_link)}" do
+      expect(page).to have_link 'MyString', href: 'http://valid.com'
+      click_on 'Delete link'
+    end
+    expect(page).to_not have_link 'MyString', href: 'http://valid.com'
+  end
+
+  it "User cannot deletes his answers link that is not his own", js: true do
+    sign_in(not_author)
+    visit question_path(answer_with_link.question)
+
+    within "#link_#{link_id(answer_with_link)}" do
+      expect(page).to_not have_link 'Delete link'
+    end
+  end
 
   describe 'Author' do
     before do
@@ -27,7 +48,7 @@ feature 'User can delete answer', %q{
       end
     end
 
-    scenario 'delete his question', js: true do
+    scenario 'delete his answer', js: true do
       expect(page).to have_content answer_with_file.body
       click_on 'Delete answer'
       expect(page).to have_content 'Your answer deleted'
@@ -60,5 +81,9 @@ feature 'User can delete answer', %q{
 
   def file_name(item)
     item.files[0].filename.to_s
+  end
+
+  def link_id(item)
+    item.links.first.id
   end
 end

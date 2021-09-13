@@ -5,7 +5,7 @@ h3 Answers
 .answers
   - if @question.answers.any?
     - if @question.best_answer
-      = render 'answers/best_answer', resource: @best_answer
+      = render 'answers/best_answer', resource: @question.best_answer
     = render @question.answers
 
 -if user_signed_in?
@@ -20,5 +20,8 @@ h3 Answers
 
    = f.label :files
    br= f.file_field :files, class: 'form-control', multiple: true, direct_upload: true
+
+   .answer-links
+     = render 'links/form', resource: @answer, f: f
 
    = f.submit 'Answer'
