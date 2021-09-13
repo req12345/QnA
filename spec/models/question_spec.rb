@@ -14,8 +14,25 @@ RSpec.describe Question, type: :model do
 
   it { should accept_nested_attributes_for :links }
   it { should accept_nested_attributes_for :reward }
-  
+
   it 'has many attached files' do
     expect(Question.new.files).to be_an_instance_of(ActiveStorage::Attached::Many)
+  end
+
+  describe 'Answer of question' do
+    let(:author) { create(:user) }
+    let(:user) { create(:user) }
+    let(:question) { create(:question, author: author) }
+    let(:answer) { create(:answer, question: question, author: user) }
+    let(:reward) { create(:reward, question: question, user: author) }
+
+    it 'set best answer and get the reward to user' do
+      expect(question.best_answer).to eq nil
+      expect(reward.user).to_not eq user
+
+      question.set_best_answer(answer)
+      expect(question.best_answer).to eq answer
+      expect(reward.user).to eq user
+    end
   end
 end

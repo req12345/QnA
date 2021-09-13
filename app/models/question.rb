@@ -12,4 +12,11 @@ class Question < ApplicationRecord
   accepts_nested_attributes_for :reward, reject_if: :all_blank
 
   validates :title, :body, presence: true
+
+  def set_best_answer(answer)
+    transaction do
+      self.update!(best_answer: answer)
+      self.reward&.update!(user: answer.author)
+    end
+  end
 end
