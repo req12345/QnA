@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     member do
       put :vote_for
       put :vote_against
+      delete :cancel_voting
     end
   end
 

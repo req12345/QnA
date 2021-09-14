@@ -17,5 +17,10 @@
                     data: { type: :json },
                     remote: true,
                     class: 'btn btn-danger btn-sm'
-                    
-        .p-2 = link_to 'Cancel voting', class: 'btn btn-danger btn-sm'
+
+        .p-2 = link_to 'Cancel voting',
+                    polymorphic_path(resource, action: :cancel_voting),
+                    method: :delete,
+                    data: { type: :json },
+                    remote: true,
+                    class: 'btn btn-info btn-sm'

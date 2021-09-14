@@ -13,6 +13,11 @@ module Votable
     votes.create!(user: user, value: -1) unless vote_author?(user)
   end
 
+  def cancel_voting(user)
+    vote = Vote.where(user_id: user.id)
+    votes.destroy(vote) if vote_author?(user)
+  end
+
   def rating
     votes.sum(:value)
   end

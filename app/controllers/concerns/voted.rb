@@ -2,7 +2,7 @@ module Voted
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_votable, only: %i[vote_for vote_against]
+    before_action :set_votable, only: %i[vote_for vote_against cancel_voting]
   end
 
   def vote_for
@@ -15,6 +15,11 @@ module Voted
     render_response
   end
 
+  def cancel_voting
+    @votable.cancel_voting(current_user)
+    render_response
+  end
+  
   private
 
   def model_klass
