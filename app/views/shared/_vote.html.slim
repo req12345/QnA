@@ -1,8 +1,15 @@
-.rating id="rating-#{resource.class.name.underscore}-#{resource.id}"
+.vote
+  .rating id="rating-#{resource.class.name.underscore}-#{resource.id}"
+    = "Rating: #{resource.rating}"
 
-- if current_user && !current_user.author_of?(resource)
-  .vote
-    .d-flex
-      .p-2 = link_to '+', class: 'btn btn-primary btn-sm'
-      .p-2 = link_to '-', class: 'btn btn-primary btn-sm'
-      .p-2 = link_to 'Cancel voting', class: 'btn btn-danger btn-sm'
+  - if user_signed_in? && !current_user.author_of?(resource)
+    .vote-actions
+      .d-flex
+        .p-2 = link_to '+', polymorphic_path(resource, action: :vote_for),
+                    method: :put,
+                    data: { type: :json },
+                    remote: true,
+                    class: 'btn btn-success btn-sm'
+
+        .p-2 = link_to '-', class: 'btn btn-danger btn-sm'
+        .p-2 = link_to 'Cancel voting', class: 'btn btn-danger btn-sm'
