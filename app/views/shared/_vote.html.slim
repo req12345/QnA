@@ -1,0 +1,8 @@
+.rating id="rating-#{resource.class.name.underscore}-#{resource.id}"
+
+- if current_user && !current_user.author_of?(resource)
+  .vote
+    .d-flex
+      .p-2 = link_to '+', class: 'btn btn-primary btn-sm'
+      .p-2 = link_to '-', class: 'btn btn-primary btn-sm'
+      .p-2 = link_to 'Cancel voting', class: 'btn btn-danger btn-sm'
