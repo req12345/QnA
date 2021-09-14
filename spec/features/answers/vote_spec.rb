@@ -13,7 +13,7 @@ feature 'User can vote for a answer', %q{
 
   describe 'User is not an author of question', js: true do
     background do
-      sign_in user
+      sign_in(user)
       visit question_path(question)
     end
 
@@ -70,7 +70,7 @@ feature 'User can vote for a answer', %q{
         click_on '-'
 
         within '.rating' do
-          expect(page).to have_content '-1'
+          expect(page).to have_content 'Rating: -1'
         end
       end
     end
@@ -83,7 +83,7 @@ feature 'User can vote for a answer', %q{
         click_on '-'
 
         within '.rating' do
-          expect(page).to have_content '-1'
+          expect(page).to have_content 'Rating: -1'
         end
       end
     end
@@ -91,7 +91,7 @@ feature 'User can vote for a answer', %q{
 
   describe 'User is author of answer tries to', js: true do
     background do
-      sign_in author
+      sign_in(author)
       visit question_path(question)
     end
 
@@ -109,7 +109,6 @@ feature 'User can vote for a answer', %q{
   end
 
   describe 'Unauthorized user tries to' do
-
     background { visit question_path(question) }
 
     scenario 'vote up for answer' do

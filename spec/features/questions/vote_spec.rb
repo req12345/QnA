@@ -12,11 +12,11 @@ feature 'User can vote for a question', %q{
 
   describe 'User is not an author of question', js: true do
     background do
-      sign_in user
+      sign_in(user)
       visit question_path(question)
     end
 
-    scenario 'votes up for question', js: true do
+    scenario 'votes up for question' do
       within "#question-#{question.id}" do
         expect(page).to have_content 'Rating: 0'
         click_on '+'
@@ -90,7 +90,7 @@ feature 'User can vote for a question', %q{
 
   describe 'User is author of question tries to', js: true do
     background do
-      sign_in author
+      sign_in(author)
       visit question_path(question)
     end
 
@@ -108,7 +108,6 @@ feature 'User can vote for a question', %q{
   end
 
   describe 'Unauthorized user tries to' do
-
     background { visit question_path(question) }
 
     scenario 'vote up for question' do
