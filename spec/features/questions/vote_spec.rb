@@ -41,44 +41,48 @@ feature 'User can vote for a question', %q{
 
     scenario 'cancels his vote' do
       within "#question-#{question.id}" do
+        expect(page).to have_content 'Rating: 0'
         click_on '+'
         click_on 'Cancel voting'
 
         within '.rating' do
-          expect(page).to have_content '0'
+          expect(page).to have_content 'Rating: 0'
         end
       end
     end
 
     scenario 'votes down for question' do
       within "#question-#{question.id}" do
+        expect(page).to have_content 'Rating: 0'
         click_on '-'
 
         within '.rating' do
-          expect(page).to have_content '-1'
+          expect(page).to have_content 'Rating: -1'
         end
       end
     end
 
     scenario 'tries to vote down for question twice' do
       within "#question-#{question.id}" do
+        expect(page).to have_content 'Rating: 0'
         click_on '-'
         click_on '-'
 
         within '.rating' do
-          expect(page).to have_content '-1'
+          expect(page).to have_content 'Rating: -1'
         end
       end
     end
 
     scenario 'can re-votes' do
       within "#question-#{question.id}" do
+        expect(page).to have_content 'Rating: 0'
         click_on "+"
         click_on 'Cancel voting'
         click_on '-'
 
         within '.rating' do
-          expect(page).to have_content '-1'
+          expect(page).to have_content 'Rating: -1'
         end
       end
     end

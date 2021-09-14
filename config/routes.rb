@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   concern :voted do
     member do
       put :vote_for
+      put :vote_against
     end
   end
 

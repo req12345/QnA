@@ -6,10 +6,18 @@ module Votable
   end
 
   def vote_for(user)
-    votes.create!(user: user, value: 1) unless votes.exists?(user: user)
+    votes.create!(user: user, value: 1) unless vote_author?(user)
+  end
+
+  def vote_against(user)
+    votes.create!(user: user, value: -1) unless vote_author?(user)
   end
 
   def rating
     votes.sum(:value)
+  end
+
+  def vote_author?(user)
+    votes.exists?(user: user)
   end
 end
