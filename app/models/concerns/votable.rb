@@ -14,7 +14,8 @@ module Votable
   end
 
   def cancel_voting(user)
-    vote = Vote.where(user_id: user.id)
+    vote = Vote.find_by(user_id: user.id)
+    return if vote == nil
     votes.destroy(vote) if vote_author?(user)
   end
 
