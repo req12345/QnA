@@ -3,8 +3,16 @@ Rails.application.routes.draw do
 
   root to: 'questions#index'
 
-  resources :questions do
-    resources :answers, only: %i[create destroy update], shallow: true do
+  concern :voted do
+    member do
+      put :vote_for
+      put :vote_against
+      delete :cancel_voting
+    end
+  end
+
+  resources :questions, concerns: :voted do
+    resources :answers, only: %i[create destroy update], concerns: :voted, shallow: true do
       member do
         post :mark_as_best
       end

@@ -1,0 +1,26 @@
+.vote
+  .rating id="rating-#{resource.class.name.underscore}-#{resource.id}"
+    = "Rating: #{resource.rating}"
+
+  - if user_signed_in? && !current_user.author_of?(resource)
+    .vote-actions
+      .d-flex
+        .p-2 = link_to '+', polymorphic_path(resource, action: :vote_for),
+                    method: :put,
+                    data: { type: :json },
+                    remote: true,
+                    class: 'btn btn-success btn-sm'
+
+        .p-2 = link_to '-',
+                    polymorphic_path(resource, action: :vote_against),
+                    method: :put,
+                    data: { type: :json },
+                    remote: true,
+                    class: 'btn btn-danger btn-sm'
+
+        .p-2 = link_to 'Cancel voting',
+                    polymorphic_path(resource, action: :cancel_voting),
+                    method: :delete,
+                    data: { type: :json },
+                    remote: true,
+                    class: 'btn btn-info btn-sm'
