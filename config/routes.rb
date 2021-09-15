@@ -26,4 +26,6 @@ Rails.application.routes.draw do
       get :rewards
     end
   end
+  
+  mount ActionCable.server => '/cable'
 end
