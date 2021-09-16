@@ -3,6 +3,8 @@ class QuestionsController < ApplicationController
 
   before_action :authenticate_user!, except: %i[index show]
 
+  after_action :publish_question, only: [:create]
+
   def index
     @questions = Question.all
   end
@@ -43,6 +45,19 @@ class QuestionsController < ApplicationController
 
   def question
     @question ||= params[:id] ? Question.with_attached_files.find(params[:id]) : Question.new
+  end
+
+  def publish_question
+    return if question.errors.any?
+
+    ActionCable.server.broadcast(
+      'questions_channel',
+      ApplicationController.render_with_signed_in_user(
+       current_user,
+       partial: 'questions/question',
+       locals: { question: @question }
+      )
+    )
   end
 
   def question_params
