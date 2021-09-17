@@ -54,7 +54,7 @@ class QuestionsController < ApplicationController
       'questions_channel',
       ApplicationController.render_with_signed_in_user(
        current_user,
-       partial: 'questions/question',
+       partial: 'questions/question_channel',
        locals: { question: @question }
       )
     )
