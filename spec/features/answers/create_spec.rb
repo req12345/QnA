@@ -9,6 +9,28 @@ feature 'User can create answer', %q{
   given(:user) { create(:user) }
   given(:question) { create(:question, author: user) }
 
+  context "muliple sessions" do
+    scenario "answer appears on other users page", js: true do
+      Capybara.using_session('user') do
+      sign_in(user)
+      visit question_path(question)
+      end
+
+      Capybara.using_session('guest') do
+      visit question_path(question)
+      end
+
+      Capybara.using_session('user') do
+      fill_in 'Your answer', with: 'Test answer'
+      click_on 'Answer'
+      expect(page).to have_content 'Test answer'
+      end
+      Capybara.using_session('guest') do
+      expect(page).to have_content 'Test answer'
+      end
+    end
+  end
+
   describe 'Authenticated user' do
     background do
       sign_in(user)
