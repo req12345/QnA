@@ -2,6 +2,7 @@
   p= 'The best answer'
   p= resource.body
 
+  = render 'shared/vote', resource: resource
   = render 'links/link', resource: resource
   = render 'shared/attachments', resource: resource
 

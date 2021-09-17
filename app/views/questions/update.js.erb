@@ -1,5 +1,6 @@
 $('.question-errors').html('<%= render 'shared/errors', resource: question %>');
 
 <% if !question.errors.present? %>
-  $('.question').html('<%= j render question %>');
+  $('#question-list-item-<%= question.id %>').remove()
+  $('.questions').append('<%= j render question %>');
 <% end %>

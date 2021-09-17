@@ -18,7 +18,6 @@ feature 'User can delete question', %q{
     visit question_path(question_with_link)
 
     within "#link_#{link_id(question_with_link)}" do
-      expect(page).to have_link 'MyString', href: 'http://valid.com'
       click_on 'Delete link'
     end
     expect(page).to_not have_link 'MyString', href: 'http://valid.com'
@@ -32,20 +31,22 @@ feature 'User can delete question', %q{
     end
   end
 
+  scenario 'can deletes attachments', js: true do
+    sign_in(question_with_file.author)
+    visit question_path(question_with_file)
+    within '.question' do
+      expect(page).to have_link file_name(question_with_file)
+      click_on 'Delete file'
+
+      expect(page).to_not have_link file_name(question_with_file)
+      expect(page).to_not have_link 'Delete file'
+    end
+  end
+
   describe 'Author' do
     before do
       sign_in(question_with_file.author)
-      visit question_path(question_with_file)
-    end
-
-    scenario 'can deletes attachments', js: true do
-      within '.question' do
-        expect(page).to have_link file_name(question_with_file)
-        click_on 'Delete file'
-
-        expect(page).to_not have_link file_name(question_with_file)
-        expect(page).to_not have_link 'Delete file'
-      end
+      visit questions_path
     end
 
     scenario 'deletes his question' do

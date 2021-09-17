@@ -39,7 +39,7 @@ feature 'User can delete answer', %q{
     end
 
     scenario 'can delete attachments', js: true do
-      within '.answers' do
+      within "#answer-#{answer_with_file.id}" do
         expect(page).to have_link file_name(answer_with_file)
         click_on 'Delete file'
 
@@ -49,10 +49,12 @@ feature 'User can delete answer', %q{
     end
 
     scenario 'delete his answer', js: true do
-      expect(page).to have_content answer_with_file.body
-      click_on 'Delete answer'
-      expect(page).to have_content 'Your answer deleted'
+      within "#answer-#{answer_with_file.id}" do
+        expect(page).to have_content answer_with_file.body
+        click_on 'Delete answer'
+      end
       expect(page).to_not have_content(answer_with_file.body)
+      expect(page).to have_content 'Your answer deleted'
     end
   end
 

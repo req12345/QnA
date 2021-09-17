@@ -1,14 +1,20 @@
-.question
-  = render @question
+.question. id="question-#{question.id}"
+  h2= question.title
+  h3= question.body
 
-h3 Answers
+  = render 'shared/vote', resource: question
+  = render 'links/link', resource: question
+  = render 'shared/attachments', resource: question
+
+
 .answers
+  h3 Answers
   - if @question.answers.any?
     - if @question.best_answer
       = render 'answers/best_answer', resource: @question.best_answer
     = render @question.answers
 
--if user_signed_in?
+- if user_signed_in?
   h4 Create new answer
   .answer-errors
     = render 'shared/errors', resource: @answer
