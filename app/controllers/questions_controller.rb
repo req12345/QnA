@@ -1,6 +1,7 @@
 class QuestionsController < ApplicationController
   include Voted
-
+  include Commented
+  
   before_action :authenticate_user!, except: %i[index show]
 
   after_action :publish_question, only: [:create]

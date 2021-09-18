@@ -46,3 +46,9 @@
         - answer.files.each do |file|
           p id="attachment_#{file.id}"
             = link_to file.filename.to_s, url_for(file), target: :blank
+
+      .answer-comments. id="answer-comments-#{answer.id}"
+        h4 Comments:
+        = render answer.comments
+      - if current_user
+        = render 'comments/form_answer', answer: answer

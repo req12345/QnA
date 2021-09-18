@@ -5,7 +5,13 @@
 
     = render 'shared/vote', resource: answer
     = render 'links/link', resource: answer
-    = render 'shared/attachments', resource: answer
+    = render 'shared/attachments', resource: @answer
+
+    .answer-comments. id="answer-comments-#{answer.id}"
+      h4 Comments:
+      = render answer.comments
+    - if current_user
+      = render 'comments/form_answer', answer: answer
 
     - if current_user&.author_of?(answer.question)
       = link_to 'Mark as best',
