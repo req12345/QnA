@@ -7,7 +7,6 @@ class AnswersController < ApplicationController
   after_action :publish_answer, only: [:create]
 
   def create
-    @question_id = params[question.id]
     @answer = question.answers.create(answer_params.merge(author: current_user))
   end
 
@@ -36,7 +35,7 @@ class AnswersController < ApplicationController
   private
 
   def publish_answer
-    return if question.errors.any?
+    return if answer.errors.any?
     ActionCable.server.broadcast("answers/#{params[:question_id]}",
       ApplicationController.render(
        partial: 'answers/answer_channel',

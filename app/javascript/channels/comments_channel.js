@@ -14,11 +14,11 @@ consumer.subscriptions.create({ channel: "CommentsChannel", question_id: gon.que
     let html_content = parsedData.html_content;
     let id = parsedData.comment.commentable_id;
     let type =  parsedData.comment.commentable_type;
-    console.log(type)
+    
     if (type == 'Question') {
       $('.question-comments').append(html_content);
     } else {
       $('#answer-comments-' + id).append(html_content);
-    }
+    };
   }
 });

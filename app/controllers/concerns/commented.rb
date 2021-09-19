@@ -33,10 +33,4 @@ module Commented
       })
     )
   end
-
-  # ActionCable.server.broadcast "comments/#{id}",
-  # ApplicationController.render(
-  #   partial: 'comments/comment',
-  #   locals: {comment: @comment}
-  # )
 end
