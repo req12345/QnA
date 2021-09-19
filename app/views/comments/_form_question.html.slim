@@ -1,6 +1,6 @@
 .comment_errors
   = render 'shared/errors', resource: @comment
-.new-comment
+.new-question-comment
   = form_with scope: :comment, url: create_comment_question_path(question), local: false  do |f|
     = f.label :body, 'Your comment'
     = f.text_area :body, class: 'form-control'

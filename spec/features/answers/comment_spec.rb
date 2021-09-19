@@ -1,17 +1,18 @@
 require 'rails_helper'
 
-feature 'User can add comments to question', %q{
-  In order to explain or asks something else about question
+feature 'User can add comments to answer', %q{
+  In order to explain or asks something else about answer
   As an authenticated user
   I'd like to be able to add comments
 } do
     given(:user) { create(:user) }
     given(:question) { create(:question, author: user) }
+    given!(:answer) { create(:answer, question: question, author: user) }
 
-    it "User add comment to question", js: true do
+    it "User add comment to answer", js: true do
       sign_in(user)
       visit question_path(question)
-      within ".new-question-comment" do
+      within ".new-answer-comment" do
         fill_in 'Your comment', with: 'New comment'
         click_on 'Add comment'
       end
@@ -20,7 +21,9 @@ feature 'User can add comments to question', %q{
 
     it 'Guest can not add comment', js: true do
       visit question_path(question)
-      expect(page).to_not have_button 'Add comment'
+      within "#answer-#{answer.id}" do
+        expect(page).to_not have_button 'Add comment'
+      end
     end
 
     context "muliple sessions" do
@@ -34,14 +37,16 @@ feature 'User can add comments to question', %q{
         end
 
         Capybara.using_session('user') do
-          within ".new-question-comment" do
+          within ".new-answer-comment" do
             fill_in 'Your comment', with: 'New comment'
             click_on 'Add comment'
           end
           expect(page).to have_content('New comment')
         end
         Capybara.using_session('guest') do
-          expect(page).to have_content('New comment')
+          within "#answer-comments-#{answer.id}" do
+            expect(page).to have_content('New comment')
+          end
         end
       end
     end

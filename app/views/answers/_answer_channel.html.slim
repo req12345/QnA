@@ -7,48 +7,26 @@
       .rating id="rating-#{answer.class.name.underscore}-#{answer.id}"
         = "Rating: #{answer.rating}"
 
-      .vote-actions
-        .d-flex
-          .p-2 = link_to '+', polymorphic_path(answer, action: :vote_for),
-                      method: :put,
-                      data: { type: :json },
-                      remote: true,
-                      class: 'btn btn-success btn-sm'
+    .links
+      - if answer.links.present?
+        p Links:
+        ul
+         - answer.links.each do |link|
+          . id="link_#{link.id}"
+            - if link.gist?
+              li= link_to link.name, link.url, target: '_blank'
+              - link.read_gist.each do |file, content|
+                = content.content
+            - else
+              li= link_to link.name, link.url, target: '_blank'
 
-          .p-2 = link_to '-',
-                      polymorphic_path(answer, action: :vote_against),
-                      method: :put,
-                      data: { type: :json },
-                      remote: true,
-                      class: 'btn btn-danger btn-sm'
+    - if answer.files.attached?
+      - answer.files.each do |file|
+        p id="attachment_#{file.id}"
+          = link_to file.filename.to_s, url_for(file), target: :blank
 
-          .p-2 = link_to 'Cancel voting',
-                      polymorphic_path(answer, action: :cancel_voting),
-                      method: :delete,
-                      data: { type: :json },
-                      remote: true,
-                      class: 'btn btn-info btn-sm'
-
-      .links
-        - if answer.links.present?
-          p Links:
-          ul
-           - answer.links.each do |link|
-            . id="link_#{link.id}"
-              - if link.gist?
-                li= link_to link.name, link.url, target: '_blank'
-                - link.read_gist.each do |file, content|
-                  = content.content
-              - else
-                li= link_to link.name, link.url, target: '_blank'
-
-      - if answer.files.attached?
-        - answer.files.each do |file|
-          p id="attachment_#{file.id}"
-            = link_to file.filename.to_s, url_for(file), target: :blank
-
-      .answer-comments. id="answer-comments-#{answer.id}"
-        h4 Comments:
-        = render answer.comments
-      - if current_user
-        = render 'comments/form_answer', answer: answer
+    .answer-comments. id="answer-comments-#{answer.id}"
+      h4 Comments:
+      = render answer.comments
+    - if current_user
+      = render 'comments/form_answer', answer: answer

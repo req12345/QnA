@@ -7,9 +7,6 @@ module Commented
 
   def create_comment
     @comment = set_commentable.comments.create(comment_params.merge(user: current_user))
-    gon.push({type: @comment.commentable_type.underscore})
-    gon.push({id: @comment.commentable.id})
-
   end
 
   private
@@ -29,13 +26,17 @@ module Commented
   def publish_comment
     return if @comment.errors.any?
     id = @comment.commentable_type == "Answer" ? @comment.commentable.question.id : @comment.commentable.id
-    ActionCable.server.broadcast(
-      "comments/#{id}",
-      ApplicationController.render_with_signed_in_user(
-       current_user,
-       partial: 'comments/comment',
-       locals: { comment: @comment }
-      )
+    ActionCable.server.broadcast("comments/#{id}",
+      ApplicationController.render(json: {
+        comment: @comment.as_json(only: %i[commentable_type commentable_id]),
+        html_content: render_to_string(partial: 'comments/comment', locals: {comment: @comment})
+      })
     )
   end
+
+  # ActionCable.server.broadcast "comments/#{id}",
+  # ApplicationController.render(
+  #   partial: 'comments/comment',
+  #   locals: {comment: @comment}
+  # )
 end
