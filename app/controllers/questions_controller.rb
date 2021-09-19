@@ -1,7 +1,7 @@
 class QuestionsController < ApplicationController
   include Voted
   include Commented
-  
+
   before_action :authenticate_user!, except: %i[index show]
 
   after_action :publish_question, only: [:create]
@@ -54,8 +54,7 @@ class QuestionsController < ApplicationController
 
     ActionCable.server.broadcast(
       'questions_channel',
-      ApplicationController.render_with_signed_in_user(
-       current_user,
+      ApplicationController.render(
        partial: 'questions/question_channel',
        locals: { question: @question }
       )
