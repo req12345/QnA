@@ -1,0 +1,6 @@
+.new-answer-comment
+  = form_with scope: :comment, url: create_comment_answer_path(answer),class: 'form-answer-comment', local: false  do |f|
+    = f.label :body, 'Your comment'
+    = f.text_area :body, class: 'form-control'
+
+    .mt-3 = f.submit 'Add comment'

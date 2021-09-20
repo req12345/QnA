@@ -1,6 +1,6 @@
 .navbar.navbar-light.bg-light
   .container
-    - if user_signed_in?
+    - if current_user
       p= link_to 'QnA', root_path, class: 'btn mt-3'
       = current_user.email
       p= link_to 'Rewards', rewards_user_path(current_user), class: 'btn mt-3'

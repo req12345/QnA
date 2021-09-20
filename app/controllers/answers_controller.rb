@@ -1,7 +1,10 @@
 class AnswersController < ApplicationController
   include Voted
-  
+  include Commented
+
   before_action :authenticate_user!
+
+  after_action :publish_answer, only: [:create]
 
   def create
     @answer = question.answers.create(answer_params.merge(author: current_user))
@@ -30,6 +33,16 @@ class AnswersController < ApplicationController
 	end
 
   private
+
+  def publish_answer
+    return if answer.errors.any?
+    ActionCable.server.broadcast("answers/#{params[:question_id]}",
+      ApplicationController.render(
+       partial: 'answers/answer_channel',
+       locals: { question: answer.question, answer: answer, current_user: current_user }
+      )
+    )
+  end
 
   def answer_params
     params.require(:answer).permit(:body, files: [], links_attributes: [:name, :url, :_destroy, :id])

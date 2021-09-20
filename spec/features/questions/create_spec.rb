@@ -8,6 +8,31 @@ feature 'User can create question', %q{
 
   given(:user) { create(:user) }
 
+  context "muliple sessions" do
+    scenario "question appears on other users page", js: true do
+     Capybara.using_session('user') do
+       sign_in(user)
+       visit questions_path
+     end
+
+     Capybara.using_session('guest') do
+       visit questions_path
+     end
+
+     Capybara.using_session('user') do
+       click_on 'Ask question'
+       fill_in 'Title', with: 'Test title'
+       fill_in 'Body', with: 'Test body'
+       click_on 'Ask'
+       expect(page).to have_content 'Your question successfully created'
+       expect(page).to have_content 'Test title'
+     end
+     Capybara.using_session('guest') do
+       expect(page).to have_content 'Test title'
+     end
+   end
+ end
+
   describe 'Authenticated user' do
     background do
       sign_in(user)

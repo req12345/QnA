@@ -20,7 +20,6 @@ feature 'User can edit his answer', %q{
       visit question_path(answer_with_link.question)
       click_on 'Edit'
       within ".answers" do
-
         expect(page).to have_link 'MyString', href: 'http://valid.com'
 
         fill_in 'Link name', with: 'New link name'
@@ -85,7 +84,6 @@ feature 'User can edit his answer', %q{
 
           expect(page).to_not have_content answer.body
           expect(page).to have_content 'edited answer'
-          expect(page).to_not have_selector 'textarea'
         end
       end
 

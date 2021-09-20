@@ -1,0 +1,32 @@
+. id="answer-#{answer.id}"
+  - if answer.persisted? && answer&.not_best_of?(question)
+
+    p= answer.body
+
+    .vote
+      .rating id="rating-#{answer.class.name.underscore}-#{answer.id}"
+        = "Rating: #{answer.rating}"
+
+    .links
+      - if answer.links.present?
+        p Links:
+        ul
+         - answer.links.each do |link|
+          . id="link_#{link.id}"
+            - if link.gist?
+              li= link_to link.name, link.url, target: '_blank'
+              - link.read_gist.each do |file, content|
+                = content.content
+            - else
+              li= link_to link.name, link.url, target: '_blank'
+
+    - if answer.files.attached?
+      - answer.files.each do |file|
+        p id="attachment_#{file.id}"
+          = link_to file.filename.to_s, url_for(file), target: :blank
+
+    .answer-comments. id="answer-comments-#{answer.id}"
+      h4 Comments:
+      = render answer.comments
+    - if current_user
+      = render 'comments/form_answer', answer: answer
