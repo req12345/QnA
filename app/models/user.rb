@@ -5,8 +5,9 @@ class User < ApplicationRecord
   has_many :votes, dependent: :destroy
 
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
-
+         :recoverable, :rememberable, :validatable,
+         :omniauthable, omniauth_providers: [:github]
+# :confirmable
   def author_of?(item)
     id == item.user_id
   end
