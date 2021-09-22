@@ -7,8 +7,8 @@ class User < ApplicationRecord
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
-         :omniauthable, omniauth_providers: [:github]
-# :confirmable
+         :omniauthable, :confirmable, omniauth_providers: %i[github vkontakte]
+
   def author_of?(item)
     id == item.user_id
   end
