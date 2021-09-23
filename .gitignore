@@ -42,3 +42,9 @@ yarn-debug.log*
 /db/.project
 
 .env
+
+/config/credentials/development.key
+
+/config/master.key
+
+/config/credentials/test.key
