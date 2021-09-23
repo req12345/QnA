@@ -1,0 +1,10 @@
+.row.justify-content-center.mt-3
+  .col.col-md-4
+    .h2 Enter your email
+    .card.border-primary
+      .card-body.form_pass_check
+        = form_with url: users_set_email_path, method: :post do |f|
+          = f.label :email
+          = f.email_field :email, class: "form-control"
+
+          = f.submit 'Submit', class: 'btn btn-primary mt-3'
