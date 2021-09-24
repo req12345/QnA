@@ -5,7 +5,9 @@
      - resource.links.each do |link|
       . id="link_#{link.id}"
         - if link.gist?
-          = javascript_include_tag link.url + '.js'
+          li= link_to link.name, link.url, target: '_blank'
+          - link.read_gist.each do |file, content|
+            = content.content
         - else
           li= link_to link.name, link.url, target: '_blank'
 
