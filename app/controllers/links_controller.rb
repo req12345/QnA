@@ -2,8 +2,8 @@ class LinksController < ApplicationController
   before_action :authenticate_user!, only: :destroy
 
   def destroy
-    if current_user&.author_of?(link.linkable)
-      link.destroy
+    if current_user
+      link.destroy if authorize! :destroy, link.linkable
     end
   end
 
