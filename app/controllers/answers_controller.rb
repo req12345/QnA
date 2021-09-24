@@ -6,12 +6,14 @@ class AnswersController < ApplicationController
 
   after_action :publish_answer, only: [:create]
 
+  authorize_resource
+  
   def create
     @answer = question.answers.create(answer_params.merge(author: current_user))
   end
 
   def destroy
-     if current_user.author_of?(answer)
+     if authorize! :destroy, answer
        answer.destroy
        flash.now[:alert] = 'Your answer deleted'
        set_question
@@ -19,7 +21,7 @@ class AnswersController < ApplicationController
   end
 
   def update
-    if current_user.author_of?(answer)
+    if authorize! :update, answer
       answer.update(answer_params)
       set_question
     end
@@ -27,7 +29,7 @@ class AnswersController < ApplicationController
 
   def mark_as_best
     set_question
-    if current_user.author_of?(question)
+    if authorize! :mark_as_best, answer
       question.set_best_answer(answer)
     end
 	end

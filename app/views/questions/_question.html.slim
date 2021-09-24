@@ -4,19 +4,21 @@
   .question-errors
     = render 'shared/errors', resource: @question
 
-  - if current_user&.author_of?(question)
+  - if can?(:update, question)
     = link_to 'Edit question',
                '#',
                class: 'edit-question-link btn btn-info btn-sm',
                data: { question_id: question.id },
                remote: true
 
+  - if can?(:destroy, question)
     = link_to 'Delete question',
               question_path(question),
               method: :delete,
               class: 'btn btn-danger btn-sm',
               remote: true
 
+  - if can?(:update, question)
     = form_with model: question, class: 'hidden', html: { id: "edit-question-#{question.id}" }, local: false do |f|
       p= f.label :title, 'Title'
       = f.text_area :title, class: 'form-control'

@@ -1,5 +1,6 @@
 .questions
-  p= link_to 'Ask question', new_question_path, class: 'btn btn-info mt-3 btn-sm'
+  - if can?(:create, Question)
+    p= link_to 'Ask question', new_question_path, class: 'btn btn-info mt-3 btn-sm'
 
   h3 Questions
   = render @questions

@@ -9,7 +9,8 @@
   .question-comments
     h4 Comments:
     = render question.comments
-  - if current_user
+
+  - if can?(:create, Comment)
     = render 'comments/form_question', resource: question
 
 .answers
@@ -19,7 +20,7 @@
       = render 'answers/best_answer', resource: @question.best_answer
     = render @question.answers
 
-- if user_signed_in?
+- if can?(:create, Answer)
   h4 Create new answer
   .answer-errors
     = render 'shared/errors', resource: @answer
