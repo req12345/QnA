@@ -6,7 +6,7 @@
   = render 'links/link', resource: resource
   = render 'shared/attachments', resource: resource
 
-  - if current_user&.author_of?(resource)
+  - if can? :update, resource
     = link_to 'Edit', '#', class: 'edit-answer-link btn btn-info btn-sm', data: { answer_id: resource.id }
 
     = form_with model: resource, class: 'hidden', html: { id: "edit-answer-#{resource.id}" }, local: false do |f|
@@ -14,6 +14,7 @@
       = f.text_area :body
       p= f.submit 'Save'
 
+  - if can? :destroy, resource
     = link_to 'Delete answer',
                 answer_path(resource),
                 method: :delete,
