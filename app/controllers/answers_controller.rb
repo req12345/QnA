@@ -6,6 +6,8 @@ class AnswersController < ApplicationController
 
   after_action :publish_answer, only: [:create]
 
+  authorize_resource
+  
   def create
     @answer = question.answers.create(answer_params.merge(author: current_user))
   end
