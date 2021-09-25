@@ -92,7 +92,7 @@ ActiveRecord::Schema.define(version: 2021_09_24_154956) do
     t.text "redirect_uri", null: false
     t.datetime "created_at", null: false
     t.datetime "revoked_at"
-    t.string "scopes", default: "", null: false
+    t.string "scopes"
     t.index ["application_id"], name: "index_oauth_access_grants_on_application_id"
     t.index ["resource_owner_id"], name: "index_oauth_access_grants_on_resource_owner_id"
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true

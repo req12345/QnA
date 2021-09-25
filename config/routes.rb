@@ -4,6 +4,14 @@ Rails.application.routes.draw do
 
   root to: 'questions#index'
 
+  namespace :api do
+    namespace :v1 do
+      resources :profiles, only: [] do
+        get :me, on: :collection
+      end
+    end
+  end
+
   namespace :users do
     get '/set_email', to: 'emails#new'
     post '/set_email', to: 'emails#create'
