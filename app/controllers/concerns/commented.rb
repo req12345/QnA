@@ -27,10 +27,10 @@ module Commented
     return if @comment.errors.any?
     id = @comment.commentable_type == "Answer" ? @comment.commentable.question.id : @comment.commentable.id
     ActionCable.server.broadcast("comments/#{id}",
-      ApplicationController.render(json: {
-        comment: @comment.as_json(only: %i[commentable_type commentable_id]),
-        html_content: render_to_string(partial: 'comments/comment', locals: {comment: @comment})
-      })
+      ApplicationController.render_with_signed_in_user(current_user,
+        json: { comment: @comment.as_json(only: %i[commentable_type commentable_id]),
+                html_content: render_to_string(partial: 'comments/comment', locals: { comment: @comment })
+        })
     )
   end
 end
