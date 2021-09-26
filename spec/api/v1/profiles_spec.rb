@@ -1,5 +1,5 @@
 require 'rails_helper'
-require "byebug"
+
 describe 'Profiles API', type: :request do
   let(:headers) { { "CONTENT_TYPE" => "application/json",
                     "ACCEPT" => "application/json" } }
