@@ -11,7 +11,7 @@ Rails.application.routes.draw do
         get :all, on: :collection
       end
 
-      resources :questions, only: [:index, :show]
+      resources :questions, only: [:index, :show, :create]
     end
   end
 

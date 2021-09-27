@@ -1,8 +1,8 @@
 require 'rails_helper'
 require "byebug"
 describe 'Questions API', type: :request do
-  let(:headers) { { "CONTENT_TYPE" => "application/json",
-                    "ACCEPT" => "application/json" } }
+  let(:headers) { { "ACCEPT" => "application/json" } }
+  let(:access_token) { create(:access_token) }
 
   describe 'GET /api/v1/questions' do
     let(:api_path) { '/api/v1/questions' }
@@ -11,7 +11,6 @@ describe 'Questions API', type: :request do
     it_behaves_like 'API authorizable'
 
     context 'authorized' do
-      let(:access_token) { create(:access_token) }
       let!(:questions) { create_list(:question, 2) }
       let(:question) { questions.first }
       let(:question_response) { json['questions'].first }
@@ -59,7 +58,7 @@ describe 'Questions API', type: :request do
   end
 
 
-  describe 'GET /api/v1/question/:id' do
+  describe 'GET /api/v1/questions/:id' do
     let(:user) { create(:user) }
     let(:question) { create(:question, :with_file, author: user) }
     let!(:answers) { create_list(:answer, 3, question: question) }
@@ -68,7 +67,6 @@ describe 'Questions API', type: :request do
     let(:question_response) { json['question'] }
     let(:api_path) { "/api/v1/questions/#{question.id}" }
     let(:method) { :get }
-    let(:access_token) { create(:access_token) }
 
     it_behaves_like 'API authorizable'
 
@@ -111,4 +109,48 @@ describe 'Questions API', type: :request do
     end
   end
 
+  describe 'POST /api/v1/questions' do
+    let(:api_path) { "/api/v1/questions" }
+
+    it_behaves_like 'API authorizable' do
+      let(:method) { :post }
+    end
+
+    context 'authorized' do
+      context 'with valid attributes' do
+        it 'saves a new question in database' do
+          expect { post api_path, params: { question: attributes_for(:question),
+                   access_token: access_token.token } }.to change(Question, :count).by(1)
+        end
+
+        it 'returns successful status' do
+          post api_path, params: { question: attributes_for(:question), access_token: access_token.token }
+          expect(response).to be_successful
+        end
+      end
+
+      context 'with invalid attributes' do
+        it 'does not saves question' do
+          expect{ post api_path, params: { question: attributes_for(:question, :invalid),
+            access_token: access_token.token } }.to_not change(Question, :count)
+        end
+
+        before { post api_path, params: { question: attributes_for(:question, :invalid),
+                                          access_token: access_token.token } }
+
+        it 'returns unprocessable_entity status' do
+          expect(response.status).to eq 422
+        end
+
+        it 'contains list of errors' do
+          expect(response.body).to match /errors/
+        end
+      end
+    end
+  end
+
+  describe 'PATCH /api/v1/questions' do
+
+    let!(:question) { create(:question)}
+  end
 end
