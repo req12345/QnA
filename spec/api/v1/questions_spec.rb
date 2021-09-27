@@ -57,4 +57,58 @@ describe 'Questions API', type: :request do
       end
     end
   end
+
+
+  describe 'GET /api/v1/question/:id' do
+    let(:user) { create(:user) }
+    let(:question) { create(:question, :with_file, author: user) }
+    let!(:answers) { create_list(:answer, 3, question: question) }
+    let!(:links) { create_list(:link, 3, linkable: question) }
+    let!(:comments) { create_list(:comment, 3, commentable: question, user: user) }
+    let(:question_response) { json['question'] }
+    let(:api_path) { "/api/v1/questions/#{question.id}" }
+    let(:method) { :get }
+    let(:access_token) { create(:access_token) }
+
+    it_behaves_like 'API authorizable'
+
+    before { do_request(method, api_path, params: { access_token: access_token.token }, headers: headers) }
+
+    it_behaves_like 'Response successful'
+
+    it_behaves_like 'Public fields' do
+      let(:attributes) { %w[id title body created_at updated_at] }
+      let(:response_resource) { question_response }
+      let(:resource) { question }
+    end
+
+    context 'Answers' do
+      it_behaves_like 'List of items returnable' do
+        let(:responce_resource) { question_response['answers'] }
+        let(:resource) { question.answers.size }
+      end
+    end
+
+    context 'Files' do
+      it_behaves_like 'List of items returnable' do
+        let(:responce_resource) { question_response['files'] }
+        let(:resource) { question.files.size }
+      end
+    end
+
+    context 'Links' do
+      it_behaves_like 'List of items returnable' do
+        let(:responce_resource) { question_response['links'] }
+        let(:resource) { question.links.size }
+      end
+    end
+
+    context 'Comments' do
+      it_behaves_like 'List of items returnable' do
+        let(:responce_resource) { question_response['comments'] }
+        let(:resource) { question.comments.size }
+      end
+    end
+  end
+
 end
