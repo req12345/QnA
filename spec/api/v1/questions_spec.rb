@@ -10,18 +10,6 @@ describe 'Questions API', type: :request do
 
     it_behaves_like 'API authorizable'
 
-    context 'unauthorized' do
-      it 'returns 401 status if there is no access_token' do
-        get api_path, headers: headers
-        expect(response.status).to eq 401
-      end
-
-      it 'returns 401 status if access_token invalid' do
-        get api_path, params: { access_token: '1234'}, headers: headers
-        expect(response.status).to eq 401
-      end
-    end
-
     context 'authorized' do
       let(:access_token) { create(:access_token) }
       let!(:questions) { create_list(:question, 2) }
@@ -31,9 +19,7 @@ describe 'Questions API', type: :request do
 
       before { do_request(method, api_path, params: { access_token: access_token.token }, headers: headers) }
 
-      it 'returns 200 status' do
-        expect(response).to be_successful
-      end
+      it_behaves_like 'Response successful'
 
       it 'returns list of questions' do
         expect(json['questions'].size).to eq 2
@@ -52,6 +38,7 @@ describe 'Questions API', type: :request do
       it "contains short title" do
         expect(question_response['short_title']).to eq question.title.truncate(7)
       end
+      
       describe 'answers' do
         let(:answer) { answers.first }
         let(:answer_response) { question_response['answers'].first }
