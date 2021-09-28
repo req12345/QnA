@@ -81,53 +81,58 @@ describe 'Answers API', type: :request do
     end
   end
 
-  # describe 'POST /api/v1/questions' do
-  #   let(:user)  { create(:user) }
-  #   let(:question) { create(:question, author: user) }
+  describe 'POST /api/v1/questions' do
+    let(:user)  { create(:user) }
+    let(:question) { create(:question, author: user) }
+
+    let(:api_path) { "/api/v1/questions/#{question.id}/answers" }
+
+
+    it_behaves_like 'API authorizable' do
+      let(:method) { :post }
+    end
   #
-  #   let(:api_path) { "/api/v1/questions/#{question.id}/answers" }
-  #
-  #
-  #   it_behaves_like 'API authorizable' do
-  #     let(:method) { :post }
-  #   end
-  # #
-  #   context 'authorized' do
-  #     let(:access_token) { create(:access_token, resource_owner_id: user.id) }
-  #
-  #     before { get api_path, params: {access_token: access_token.token}, headers: headers }
-  #
-  #     context 'with valid attributes' do
-  #       it 'saves a new question in database' do
-  #         expect { post api_path, params: { question_id: :question, author_id: user.id, answer: attributes_for(:answer),
-  #                  access_token: access_token.token } }.to change(Answer, :count).by(1)
-  #       end
-  # ===================
-  #       it 'returns successful status' do
-  #         post api_path, params: { question: attributes_for(:question), access_token: access_token.token }
-  #         expect(response).to be_successful
-  #       end
-  #     end
-  #
-  #     context 'with invalid attributes' do
-  #       it 'does not saves question' do
-  #         expect{ post api_path, params: { question: attributes_for(:question, :invalid),
-  #           access_token: access_token.token } }.to_not change(Question, :count)
-  #       end
-  #
-  #       before { post api_path, params: { question: attributes_for(:question, :invalid),
-  #                                         access_token: access_token.token } }
-  #
-  #       it 'returns unprocessable_entity status' do
-  #         expect(response.status).to eq 422
-  #       end
-  #
-  #       it 'contains list of errors' do
-  #         expect(response.body).to match /errors/
-  #       end
-  #     end
-  #   end
-  # end
+    context 'authorized' do
+      let(:access_token) { create(:access_token, resource_owner_id: user.id) }
+
+      before do
+        post api_path, params: { question: question,
+                                 author: user,
+                                 answer: attributes_for(:answer),
+                                 access_token: access_token.token }
+      end
+
+      context 'with valid attributes' do
+        it 'saves a new question in database' do
+          expect(Answer.count).to eq 1
+        end
+
+        it 'returns successful status' do
+          expect(response).to be_successful
+        end
+      end
+
+      context 'with invalid attributes' do
+        let(:params) { {question: question,
+                        answer: attributes_for(:answer, :invalid),
+                        access_token: access_token.token} }
+
+        it 'does not saves question' do
+          expect{ post api_path, params: params }.to_not change(Answer, :count)
+        end
+
+        before { post api_path, params: params }
+
+        it 'returns unprocessable_entity status' do
+          expect(response.status).to eq 422
+        end
+
+        it 'contains list of errors' do
+          expect(response.body).to match /errors/
+        end
+      end
+    end
+  end
   #
   # describe 'PATCH /api/v1/questions' do
   #   let(:author) { create(:user) }

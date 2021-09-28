@@ -1,5 +1,5 @@
 class Api::V1::AnswersController < Api::V1::BaseController
-  before_action :find_question, only: [:index, :show, :update, :destroy ]
+  before_action :find_question, only: [:index, :create ]
   before_action :find_answer, only: [ :show, :update, :destroy ]
 
   def index
