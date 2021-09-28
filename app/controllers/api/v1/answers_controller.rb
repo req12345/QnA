@@ -2,6 +2,8 @@ class Api::V1::AnswersController < Api::V1::BaseController
   before_action :find_question, only: [:index, :create ]
   before_action :find_answer, only: [ :show, :update, :destroy ]
 
+  authorize_resource
+  
   def index
     @question = Question.includes(:answers)
     render json: @question
@@ -12,7 +14,6 @@ class Api::V1::AnswersController < Api::V1::BaseController
   end
 
   def create
-
     @answer = @question.answers.create(answer_params)
     @answer.author = current_resource_owner
 
@@ -26,7 +27,7 @@ class Api::V1::AnswersController < Api::V1::BaseController
   def update
     authorize! :update, @answer
 
-    if @answer.update(question_params)
+    if @answer.update(answer_params)
       render json: @answer, status: :accepted
     else
       render json: { errors: @answer.errors }, status: :unprocessable_entity
@@ -39,6 +40,7 @@ class Api::V1::AnswersController < Api::V1::BaseController
     @answer.destroy
     render json: { messages: ['Your answer deleted'] }
   end
+
   private
 
   def answer_params
