@@ -1,5 +1,5 @@
 require 'rails_helper'
-require "byebug"
+
 describe 'Questions API', type: :request do
   let(:headers) { { "ACCEPT" => "application/json" } }
 
@@ -127,25 +127,28 @@ describe 'Questions API', type: :request do
 
     context 'authorized' do
       context 'with valid attributes' do
+        let(:params) { { question: attributes_for(:question),
+                         access_token: access_token.token } }
+
         it 'saves a new question in database' do
-          expect { post api_path, params: { question: attributes_for(:question),
-                   access_token: access_token.token } }.to change(Question, :count).by(1)
+          expect { post api_path, params: params }.to change(Question, :count).by(1)
         end
 
         it 'returns successful status' do
-          post api_path, params: { question: attributes_for(:question), access_token: access_token.token }
+          post api_path, params: params
           expect(response).to be_successful
         end
       end
 
       context 'with invalid attributes' do
+        let(:params) { { question: attributes_for(:question, :invalid),
+                         access_token: access_token.token } }
+
         it 'does not saves question' do
-          expect{ post api_path, params: { question: attributes_for(:question, :invalid),
-            access_token: access_token.token } }.to_not change(Question, :count)
+          expect{ post api_path, params: params }.to_not change(Question, :count)
         end
 
-        before { post api_path, params: { question: attributes_for(:question, :invalid),
-                                          access_token: access_token.token } }
+        before { post api_path, params: params }
 
         it 'returns unprocessable_entity status' do
           expect(response.status).to eq 422

@@ -44,6 +44,7 @@ describe 'Answers API', type: :request do
     let(:method) { :get }
     let(:access_token) { create(:access_token) }
     let(:params) { {question_id: question.id, access_token: access_token.token } }
+
     it_behaves_like 'API authorizable'
 
     before { do_request(method, api_path, params: params, headers: headers) }
@@ -217,11 +218,10 @@ describe 'Answers API', type: :request do
     end
   end
 
-  describe 'DELETE /api/v1/questions' do
+  describe 'DELETE /api/v1/answers/:id' do
     let(:author) { create(:user) }
     let(:question) { create(:question, author: author) }
     let!(:answer) { create(:answer, question: question, author: author) }
-
     let(:api_path) { "/api/v1/answers/#{answer.id}" }
 
     it_behaves_like 'API authorizable' do
