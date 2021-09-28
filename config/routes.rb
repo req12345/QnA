@@ -11,7 +11,9 @@ Rails.application.routes.draw do
         get :all, on: :collection
       end
 
-      resources :questions, except: [:edit, :new]
+      resources :questions, except: [:edit, :new] do
+        resources :answers, except: [:edit, :new], shallow: true
+      end
     end
   end
 

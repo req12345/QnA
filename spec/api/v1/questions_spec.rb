@@ -57,7 +57,6 @@ describe 'Questions API', type: :request do
     end
   end
 
-
   describe 'GET /api/v1/questions/:id' do
     let(:user) { create(:user) }
     let(:question) { create(:question, :with_file, author: user) }
