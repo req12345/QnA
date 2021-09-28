@@ -1,5 +1,5 @@
 class Api::V1::QuestionsController < Api::V1::BaseController
-  before_action :find_question, only: [ :show, :update ]
+  before_action :find_question, only: [ :show, :update, :destroy ]
 
   def index
     @questions = Question.all
@@ -21,6 +21,7 @@ class Api::V1::QuestionsController < Api::V1::BaseController
 
   def update
     authorize! :update, @question
+
     if @question.update(question_params)
       render json: @question, status: :accepted
     else
@@ -28,6 +29,12 @@ class Api::V1::QuestionsController < Api::V1::BaseController
     end
   end
 
+  def destroy
+    authorize! :destroy, @question
+
+    @question.destroy
+    render json: { messages: ['Your question deleted'] }
+  end
   private
 
   def question_params

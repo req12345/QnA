@@ -157,7 +157,6 @@ describe 'Questions API', type: :request do
 
   describe 'PATCH /api/v1/questions' do
     let(:author) { create(:user) }
-    let(:user) { create(:user) }
     let!(:question) { create(:question, author: author) }
     let(:api_path) { "/api/v1/questions/#{question.id}" }
 
@@ -213,7 +212,8 @@ describe 'Questions API', type: :request do
       end
 
       context 'not author tries to update question' do
-        let(:other_access_token) { create(:access_token) }
+        let(:user) { create(:user) }
+        let(:other_access_token) { create(:access_token, resource_owner_id: user.id) }
 
         before do
           patch api_path, params: { id: question,
@@ -231,6 +231,52 @@ describe 'Questions API', type: :request do
         it 'returns 302 status' do
           expect(response.status).to eq 302
         end
+      end
+    end
+  end
+
+  describe 'DELETE /api/v1/questions' do
+    let(:author) { create(:user) }
+    let!(:question) { create(:question, author: author) }
+    let(:api_path) { "/api/v1/questions/#{question.id}" }
+
+    it_behaves_like 'API authorizable' do
+      let(:method) { :delete }
+    end
+
+    context 'authorized' do
+      let(:access_token) { create(:access_token, resource_owner_id: author.id) }
+
+      before do
+        delete api_path, params: { id: question, access_token: access_token.token}
+      end
+
+      it_behaves_like 'Response successful'
+
+      it 'deletes the question' do
+        expect(Question.count).to eq 0
+      end
+
+      it 'returns successful message' do
+        expect(json['messages']).to include('Your question deleted')
+      end
+    end
+
+    context 'not authorized' do
+      let(:user) { create(:user) }
+      let(:other_access_token) { create(:access_token, resource_owner_id: user.id) }
+      let(:params) { { id: question, access_token: other_access_token.token } }
+
+      before do
+        delete api_path, params: params, headers: headers
+      end
+
+      it 'tries to delete question' do
+        expect(Question.count).to eq 1
+      end
+
+      it 'returns status 403' do
+        expect(response.status).to eq 403
       end
     end
   end
