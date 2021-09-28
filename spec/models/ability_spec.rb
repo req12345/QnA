@@ -9,6 +9,7 @@ RSpec.describe Ability, type: :model do
     it { should be_able_to :read, Question }
     it { should be_able_to :read, Answer }
     it { should be_able_to :read, Comment }
+    it { should be_able_to :all, User, user: user }
 
     it { should_not be_able_to :manage, :all }
   end
@@ -71,5 +72,6 @@ RSpec.describe Ability, type: :model do
     end
 
     it { should be_able_to :destroy, ActiveStorage::Attachment }
+    it { should be_able_to :me, User, user: user }
   end
 end

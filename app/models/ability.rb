@@ -5,7 +5,7 @@ class Ability
 
   def initialize(user)
     @user = user
-    
+
     if user
       user.admin? ? admin_abilities : user_abilities
     else
@@ -19,10 +19,12 @@ class Ability
 
   def guest_abilities
     can :read, :all
+    can :all, User
   end
 
   def user_abilities
-    can :read, :all
+    guest_abilities
+
     can [:create, :create_comment], [Question, Answer, Comment]
     can [:destroy, :update], [Question, Answer], user_id: user.id
     can :destroy, Link, linkable: { user_id: user.id }
@@ -33,5 +35,6 @@ class Ability
       user.author_of?(attachment.record)
     end
     can :mark_as_best, Answer, question: {user_id: user.id}
+    can :me, User, user: user
   end
 end

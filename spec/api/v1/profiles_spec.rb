@@ -11,7 +11,7 @@ describe 'Profiles API', type: :request do
     it_behaves_like 'API authorizable'
 
     context 'authorized' do
-      let!(:me) { create(:user) }
+      let(:me) { create(:user) }
       let(:access_token) { create(:access_token, resource_owner_id: me.id) }
 
       before { do_request(method, api_path, params: { access_token: access_token.token }, headers: headers) }

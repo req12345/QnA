@@ -1,5 +1,5 @@
 require 'rails_helper'
-require "byebug"
+
 describe 'Answers API', type: :request do
   let(:headers) { { "ACCEPT" => "application/json" } }
 
