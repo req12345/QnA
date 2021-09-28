@@ -40,7 +40,9 @@ describe 'Profiles API', type: :request do
       let(:user) { users.last }
       let(:access_token) { create(:access_token, resource_owner_id: me.id) }
 
-      before { do_request(method, api_path, params: { access_token: access_token.token }, headers: headers) }
+      before { do_request(method, api_path,
+                          params: { access_token: access_token.token },
+                          headers: headers) }
 
       it_behaves_like 'Response successful'
 

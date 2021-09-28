@@ -1,8 +1,8 @@
 class Api::V1::QuestionsController < Api::V1::BaseController
-  before_action :find_question, only: [ :show, :update, :destroy ]
+  before_action :find_question, only: %i[show update destroy ]
 
   authorize_resource
-  
+
   def index
     @questions = Question.all
     render json: @questions

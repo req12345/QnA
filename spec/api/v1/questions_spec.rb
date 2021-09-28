@@ -16,7 +16,9 @@ describe 'Questions API', type: :request do
       let(:question_response) { json['questions'].first }
       let!(:answers) { create_list(:answer, 3, question: question) }
 
-      before { do_request(method, api_path, params: { access_token: access_token.token }, headers: headers) }
+      before { do_request(method, api_path,
+                          params: { access_token: access_token.token },
+                          headers: headers) }
 
       it_behaves_like 'Response successful'
 
@@ -70,7 +72,9 @@ describe 'Questions API', type: :request do
 
     it_behaves_like 'API authorizable'
 
-    before { do_request(method, api_path, params: { access_token: access_token.token }, headers: headers) }
+    before { do_request(method, api_path,
+                        params: { access_token: access_token.token },
+                        headers: headers) }
 
     it "assigns the requested question to @question" do
       expect(assigns(:question)).to eq question
