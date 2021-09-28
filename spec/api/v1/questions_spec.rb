@@ -2,7 +2,6 @@ require 'rails_helper'
 require "byebug"
 describe 'Questions API', type: :request do
   let(:headers) { { "ACCEPT" => "application/json" } }
-  let(:access_token) { create(:access_token) }
 
   describe 'GET /api/v1/questions' do
     let(:api_path) { '/api/v1/questions' }
@@ -11,6 +10,7 @@ describe 'Questions API', type: :request do
     it_behaves_like 'API authorizable'
 
     context 'authorized' do
+      let(:access_token) { create(:access_token) }
       let!(:questions) { create_list(:question, 2) }
       let(:question) { questions.first }
       let(:question_response) { json['questions'].first }
@@ -67,10 +67,15 @@ describe 'Questions API', type: :request do
     let(:question_response) { json['question'] }
     let(:api_path) { "/api/v1/questions/#{question.id}" }
     let(:method) { :get }
+    let(:access_token) { create(:access_token) }
 
     it_behaves_like 'API authorizable'
 
     before { do_request(method, api_path, params: { access_token: access_token.token }, headers: headers) }
+
+    it "assigns the requested question to @question" do
+      expect(assigns(:question)).to eq question
+    end
 
     it_behaves_like 'Response successful'
 
@@ -111,6 +116,7 @@ describe 'Questions API', type: :request do
 
   describe 'POST /api/v1/questions' do
     let(:api_path) { "/api/v1/questions" }
+    let(:access_token) { create(:access_token) }
 
     it_behaves_like 'API authorizable' do
       let(:method) { :post }
@@ -150,7 +156,82 @@ describe 'Questions API', type: :request do
   end
 
   describe 'PATCH /api/v1/questions' do
+    let(:author) { create(:user) }
+    let(:user) { create(:user) }
+    let!(:question) { create(:question, author: author) }
+    let(:api_path) { "/api/v1/questions/#{question.id}" }
 
-    let!(:question) { create(:question)}
+    it_behaves_like 'API authorizable' do
+      let(:method) { :patch }
+    end
+
+    context 'authorized' do
+      let(:access_token) { create(:access_token, resource_owner_id: author.id) }
+
+      context 'with valid attributes' do
+        before do
+          patch api_path, params: { id: question,
+            question: { title: 'new title', body: 'new body' },
+            access_token: access_token.token }
+        end
+
+        it_behaves_like 'Response successful'
+
+        it "assigns the requested question to @question" do
+          expect(assigns(:question)).to eq question
+        end
+
+        it 'changes question attributes' do
+          question.reload
+
+          expect(question.title).to eq 'new title'
+          expect(question.body).to eq 'new body'
+        end
+      end
+
+      context 'with invalid attributes' do
+        before do
+          patch api_path, params: { id: question,
+          question: attributes_for(:question, :invalid),
+          access_token: access_token.token }
+        end
+
+        it "not changes question attirbutes" do
+          question.reload
+
+          expect(question.title).to eq 'MyString'
+          expect(question.body).to eq 'MyText'
+        end
+
+        it 'returns unprocessable_entity status' do
+          expect(response.status).to eq 422
+        end
+
+        it 'contains list of errors' do
+          expect(response.body).to match /errors/
+        end
+      end
+
+      context 'not author tries to update question' do
+        let(:other_access_token) { create(:access_token) }
+
+        before do
+          patch api_path, params: { id: question,
+          question: attributes_for(:question),
+          access_token: other_access_token.token }
+        end
+
+        it "not changes question attirbutes" do
+          question.reload
+
+          expect(question.title).to eq 'MyString'
+          expect(question.body).to eq 'MyText'
+        end
+
+        it 'returns 302 status' do
+          expect(response.status).to eq 302
+        end
+      end
+    end
   end
 end

@@ -1,5 +1,5 @@
 class Api::V1::QuestionsController < Api::V1::BaseController
-  before_action :find_question, only: [ :show ]
+  before_action :find_question, only: [ :show, :update ]
 
   def index
     @questions = Question.all
@@ -14,6 +14,15 @@ class Api::V1::QuestionsController < Api::V1::BaseController
     @question = current_resource_owner.questions.create(question_params)
     if @question.save
       render json: @question, status: :created
+    else
+      render json: { errors: @question.errors }, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    authorize! :update, @question
+    if @question.update(question_params)
+      render json: @question, status: :accepted
     else
       render json: { errors: @question.errors }, status: :unprocessable_entity
     end
