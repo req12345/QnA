@@ -14,19 +14,20 @@ describe 'Answers API', type: :request do
     context "authorized" do
       let(:access_token) { create(:access_token) }
       let!(:answers) { create_list(:answer, 3, question: question, author: user) }
+      let(:params) { { question_id: question.id,access_token: access_token.token } }
 
-      before { do_request(method, api_path, params: {question_id: question.id, access_token: access_token.token }, headers: headers) }
+      before { do_request(method, api_path, params: params, headers: headers) }
 
       it_behaves_like 'Response successful'
 
       it_behaves_like 'List of items returnable' do
-        let(:responce_resource) { json['questions'].first['answers']  }
+        let(:responce_resource) { json['answers'] }
         let(:resource) { answers.size }
       end
 
       it_behaves_like 'Public fields' do
-        let(:attributes) { %w[id body created_at updated_at] }
-        let(:response_resource) { json['questions'].first['answers'].first }
+        let(:attributes) { %w[id body user_id question_id created_at updated_at] }
+        let(:response_resource) { json['answers'].first }
         let(:resource) { answers.first }
       end
     end
@@ -42,17 +43,17 @@ describe 'Answers API', type: :request do
     let(:api_path) { "/api/v1/answers/#{answer.id}" }
     let(:method) { :get }
     let(:access_token) { create(:access_token) }
-
+    let(:params) { {question_id: question.id, access_token: access_token.token } }
     it_behaves_like 'API authorizable'
 
-    before { do_request(method, api_path, params: {question_id: question.id, access_token: access_token.token }, headers: headers) }
-    #
+    before { do_request(method, api_path, params: params, headers: headers) }
+
     it "assigns the requested answer to @answer" do
       expect(assigns(:answer)).to eq answer
     end
 
     it_behaves_like 'Response successful'
-    #
+
     it_behaves_like 'Public fields' do
       let(:attributes) { %w[id body created_at updated_at] }
       let(:response_resource) { answer_response }
@@ -257,7 +258,7 @@ describe 'Answers API', type: :request do
       it 'tries to delete answer' do
         expect(Answer.count).to eq 1
       end
-  
+
       it 'returns status 403' do
         expect(response.status).to eq 403
       end
