@@ -1,7 +1,21 @@
 Rails.application.routes.draw do
+  use_doorkeeper
   devise_for :users, controllers: { omniauth_callbacks: 'oauth_callbacks' }
 
   root to: 'questions#index'
+
+  namespace :api do
+    namespace :v1 do
+      resources :profiles, only: [] do
+        get :me, on: :collection
+        get :all, on: :collection
+      end
+
+      resources :questions, except: [:edit, :new] do
+        resources :answers, except: [:edit, :new], shallow: true
+      end
+    end
+  end
 
   namespace :users do
     get '/set_email', to: 'emails#new'
