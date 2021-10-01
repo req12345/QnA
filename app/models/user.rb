@@ -23,6 +23,6 @@ class User < ApplicationRecord
   end
 
   def subscribed?(question)
-    question.subscriptions.where(user: self).exists?
+    subscriptions.where(question: question).exists?
   end
 end

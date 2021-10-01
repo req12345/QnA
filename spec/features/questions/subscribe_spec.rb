@@ -8,7 +8,6 @@ feature 'User can subscribe on the question', %q{
 
   given(:author) { create(:user) }
   given(:question) { create(:question, author: author) }
-  given!(:subscription) { create(:subscription, question: question, user: author) }
 
   describe 'Authenticated user' do
     context 'as auhtor' do

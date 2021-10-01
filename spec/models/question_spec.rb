@@ -38,4 +38,18 @@ RSpec.describe Question, type: :model do
       expect(reward.user).to eq user
     end
   end
+
+  describe 'after creating' do
+    let(:author) { create(:user) }
+    let(:user) { create(:user) }
+    let(:question) { create(:question, author: author) }
+
+    it "creates subscription for current_user" do
+      expect(question.subscriptions.first.user).to eq author
+    end
+
+    it "not creates subscription for other users" do
+      expect(question.subscriptions.first.user).to_not eq user
+    end
+  end
 end

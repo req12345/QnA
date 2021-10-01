@@ -17,10 +17,16 @@ class Question < ApplicationRecord
 
   validates :title, :body, presence: true
 
+  after_create :create_subscription
+
   def set_best_answer(answer)
     transaction do
       self.update!(best_answer: answer)
       self.reward&.update!(user: answer.author)
     end
+  end
+
+  def create_subscription
+    subscriptions.create(user: author)
   end
 end
