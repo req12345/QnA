@@ -65,7 +65,7 @@ RSpec.describe QuestionsController, type: :controller do
         expect(response).to redirect_to assigns(:question)
       end
 
-      it "creates subscription for author" do
+      it "creates subscription for question" do
         expect { post :create, params: { question: attributes_for(:question) } }.to change(Subscription, :count).by(1)
       end
 
@@ -85,7 +85,7 @@ RSpec.describe QuestionsController, type: :controller do
         expect(response).to render_template :new
       end
 
-      it "not creates subscription for author" do
+      it "not creates subscription for questioon" do
         expect { post :create, params: { question: attributes_for(:question, :invalid) } }.to_not change(Subscription, :count)
       end
     end

@@ -36,6 +36,5 @@ class Ability
     end
     can :mark_as_best, Answer, question: {user_id: user.id}
     can :me, User, user_id: user.id
-    # can :create,
   end
 end

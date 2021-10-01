@@ -3,7 +3,7 @@ class QuestionsController < ApplicationController
   include Commented
 
   before_action :authenticate_user!, except: %i[index show]
-  before_action :find_subsription, only: [:show]
+  before_action :find_subsription, only: [:show, :edit]
 
   after_action :publish_question, only: [:create]
 
@@ -48,7 +48,6 @@ class QuestionsController < ApplicationController
   private
 
   def find_subsription
-
     @subscription = question.subscriptions.find_by(user: current_user)
   end
 

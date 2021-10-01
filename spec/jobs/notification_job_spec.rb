@@ -6,12 +6,10 @@ RSpec.describe NotificationJob, type: :job do
   let(:question) { create(:question, author: user) }
   let(:answer) { create(:answer, question: question, author: user) }
 
-  before do
-    allow(NotificationService).to receive(:new).and_return(service)
-  end
+  before { allow(NotificationService).to receive(:new).and_return(service) }
 
   it 'calls NotificationService #notification' do
     expect(service).to receive(:send_notification)
     NotificationJob.perform_now(answer)
-    end
+  end
 end

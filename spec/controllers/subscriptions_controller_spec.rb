@@ -5,7 +5,6 @@ RSpec.describe SubscriptionsController, type: :controller do
   let(:user) { create(:user) }
 
   describe 'POST #create' do
-
     let(:create_request) { post :create, params: { question_id: question, format: :js } }
 
     context 'authenticated user' do
