@@ -48,3 +48,5 @@ yarn-debug.log*
 /config/master.key
 
 /config/credentials/test.key
+
+/dump.rdb

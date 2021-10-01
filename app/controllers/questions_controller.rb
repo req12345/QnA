@@ -3,6 +3,7 @@ class QuestionsController < ApplicationController
   include Commented
 
   before_action :authenticate_user!, except: %i[index show]
+  before_action :find_subsription, only: [:show, :edit]
 
   after_action :publish_question, only: [:create]
 
@@ -39,11 +40,15 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
-    question.destroy if authorize! :update, question
+    question.destroy if authorize! :destroy, question
     redirect_to questions_path, alert: 'Your question deleted'
   end
 
   private
+
+  def find_subsription
+    @subscription = question.subscriptions.find_by(user: current_user)
+  end
 
   def question
     @question ||= params[:id] ? Question.with_attached_files.find(params[:id]) : Question.new

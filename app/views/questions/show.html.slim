@@ -6,6 +6,9 @@
   = render 'links/link', resource: question
   = render 'shared/attachments', resource: question
 
+  .subscription
+    = render 'subscriptions/subscription', resource: question
+
   .question-comments
     h4 Comments:
     = render question.comments

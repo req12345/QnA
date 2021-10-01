@@ -13,7 +13,13 @@ class Answer < ApplicationRecord
 
   validates :body, presence: true
 
+  after_commit :send_notification, on: :create
+
   def not_best_of?(question)
     self.id != question.best_answer_id
+  end
+
+  def send_notification
+    NotificationJob.perform_later(self)
   end
 end

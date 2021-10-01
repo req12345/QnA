@@ -27,5 +27,13 @@ FactoryBot.define do
         create(:reward, question: question)
       end
     end
+
+    trait :yesterdays do
+      created_at { Date.yesterday }
+    end
+
+    trait :before_yesterdays do
+      created_at { Date.yesterday - 1 }
+    end
   end
 end

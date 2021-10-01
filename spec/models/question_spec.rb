@@ -6,6 +6,7 @@ RSpec.describe Question, type: :model do
   it_behaves_like 'linkable'
 
   it { should have_many(:answers).dependent(:destroy) }
+  it { should have_many(:subscriptions).dependent(:destroy) }
   it { should have_one(:reward).dependent(:destroy) }
 
   it { should belong_to(:author) }
@@ -35,6 +36,20 @@ RSpec.describe Question, type: :model do
       question.set_best_answer(answer)
       expect(question.best_answer).to eq answer
       expect(reward.user).to eq user
+    end
+  end
+
+  describe 'after creating' do
+    let(:author) { create(:user) }
+    let(:user) { create(:user) }
+    let(:question) { create(:question, author: author) }
+
+    it "creates subscription for current_user" do
+      expect(question.subscriptions.first.user).to eq author
+    end
+
+    it "not creates subscription for other users" do
+      expect(question.subscriptions.first.user).to_not eq user
     end
   end
 end
