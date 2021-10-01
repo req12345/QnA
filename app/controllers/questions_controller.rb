@@ -3,6 +3,7 @@ class QuestionsController < ApplicationController
   include Commented
 
   before_action :authenticate_user!, except: %i[index show]
+  before_action :find_subsription, only: [:show]
 
   after_action :publish_question, only: [:create]
 
@@ -28,6 +29,7 @@ class QuestionsController < ApplicationController
     @question = current_user.questions.create(question_params)
 
     if question.save
+      question.subscriptions.create(user: current_user)
       redirect_to question, notice: 'Your question successfully created'
     else
       render :new
@@ -44,6 +46,11 @@ class QuestionsController < ApplicationController
   end
 
   private
+
+  def find_subsription
+
+    @subscription = question.subscriptions.find_by(user: current_user)
+  end
 
   def question
     @question ||= params[:id] ? Question.with_attached_files.find(params[:id]) : Question.new

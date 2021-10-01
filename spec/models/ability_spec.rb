@@ -73,5 +73,10 @@ RSpec.describe Ability, type: :model do
 
     it { should be_able_to :destroy, ActiveStorage::Attachment }
     it { should be_able_to :me, User, user: user }
+
+    context 'subscribe' do
+      it { should be_able_to :create, Subscription }
+      it { should be_able_to :destroy, Subscription }
+    end
   end
 end

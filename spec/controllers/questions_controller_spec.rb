@@ -64,6 +64,15 @@ RSpec.describe QuestionsController, type: :controller do
         post :create, params: { question: attributes_for(:question) }
         expect(response).to redirect_to assigns(:question)
       end
+
+      it "creates subscription for author" do
+        expect { post :create, params: { question: attributes_for(:question) } }.to change(Subscription, :count).by(1)
+      end
+
+      it 'assigns author to question subscriber' do
+        post :create, params: { question: attributes_for(:question) }
+        expect(Question.first.subscriptions.first.user).to eq user
+      end
     end
 
     context 'with invalid attributes' do
@@ -74,6 +83,10 @@ RSpec.describe QuestionsController, type: :controller do
       it 're-renders new view' do
         post :create, params: { question: attributes_for(:question, :invalid) }
         expect(response).to render_template :new
+      end
+
+      it "not creates subscription for author" do
+        expect { post :create, params: { question: attributes_for(:question, :invalid) } }.to_not change(Subscription, :count)
       end
     end
   end
