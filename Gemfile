@@ -57,6 +57,7 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'dotenv-rails'
   gem "letter_opener"
+  gem 'database_cleaner'
 end
 
 group :development do
