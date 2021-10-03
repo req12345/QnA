@@ -9,6 +9,6 @@ class SearchController < ApplicationController
   private
 
   def search_params
-    params.permit(:body, :type, :authenticity_token, :commit)
+    params.permit(:body, :type)
   end
 end

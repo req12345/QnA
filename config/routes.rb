@@ -24,8 +24,8 @@ Rails.application.routes.draw do
     end
   end
 
-  post 'search', action: :search, controller: 'search'
-  
+  get 'search', action: :search, controller: 'search'
+
   namespace :users do
     get '/set_email', to: 'emails#new'
     post '/set_email', to: 'emails#create'
