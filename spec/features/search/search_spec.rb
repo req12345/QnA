@@ -4,12 +4,13 @@ feature 'User can search', %q{
   In order to find important information
   As an any role user
   I'd like to be able to searching records by keywords
-}, sphinx: true do
+} do
 
   given(:user) { create(:user) }
-  given!(:question) { create(:question) }
+  given!(:question) { create(:question, author: user) }
 
   before { visit root_path }
+
   scenario 'User search within All data that is not present', sphinx: true do
     ThinkingSphinx::Test.run do
       within '.search' do
