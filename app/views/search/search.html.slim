@@ -1,0 +1,18 @@
+.row.justify-content-center.mt-3
+  .col.col-md-6
+    .form-group.mt-3
+      - if @result.empty?
+        h3 No results
+      - else
+        ul
+          - @result.each do |item|
+            - if item.is_a?(Answer)
+              .question-link = link_to item.question.title, question_path(item.question)
+              .answer-body = "#{item.class}: #{ item.body}"
+            - elsif item.is_a?(Comment)
+              .d-block = link_to item.commentable.body, question_path(item.commentable)
+              .d-block ="#{item.class}: #{item.body}"
+            - elsif item.is_a?(User)
+              .d-block = "#{item.email}"
+            - else
+              .= link_to item.title, question_path(item)
