@@ -1,42 +1,43 @@
-.question. id="question-#{question.id}"
-  h2= question.title
-  h3= question.body
+.subscription
+  = render 'subscriptions/subscription', resource: question
 
-  = render 'shared/vote', resource: question
-  = render 'links/link', resource: question
-  = render 'shared/attachments', resource: question
+- cache question do
+  .question. id="question-#{question.id}"
+    h2= question.title
+    h3= question.body
 
-  .subscription
-    = render 'subscriptions/subscription', resource: question
+    = render 'shared/vote', resource: question
+    = render 'links/link', resource: question
+    = render 'shared/attachments', resource: question
 
-  .question-comments
-    h4 Comments:
-    = render question.comments
+    .question-comments
+      h4 Comments:
+      = render question.comments
 
-  - if can?(:create, Comment)
-    = render 'comments/form_question', resource: question
+    - if can?(:create, Comment)
+      = render 'comments/form_question', resource: question
 
-.answers
-  h3 Answers
-  - if @question.answers.any?
-    - if @question.best_answer
-      = render 'answers/best_answer', resource: @question.best_answer
-    = render @question.answers
+  .answers
+    h3 Answers
+    - if @question.answers.any?
+      - if @question.best_answer
+        = render 'answers/best_answer', resource: @question.best_answer
+      = render @question.answers
 
-- if can?(:create, Answer)
-  h4 Create new answer
-  .answer-errors
-    = render 'shared/errors', resource: @answer
+  - if can?(:create, Answer)
+    h4 Create new answer
+    .answer-errors
+      = render 'shared/errors', resource: @answer
 
-  = form_with model: [@question, @answer], class: 'new-answer', data: { type: :json }, local: false do |f|
+    = form_with model: [@question, @answer], class: 'new-answer', data: { type: :json }, local: false do |f|
 
-   = f.label :body, 'Your answer'
-   = f.text_area :body, class: 'form-control'
+     = f.label :body, 'Your answer'
+     = f.text_area :body, class: 'form-control'
 
-   = f.label :files
-   br= f.file_field :files, class: 'form-control', multiple: true, direct_upload: true
+     = f.label :files
+     br= f.file_field :files, class: 'form-control', multiple: true, direct_upload: true
 
-   .answer-links
-     = render 'links/form', resource: @answer, f: f
+     .answer-links
+       = render 'links/form', resource: @answer, f: f
 
-   = f.submit 'Answer'
+     = f.submit 'Answer'
